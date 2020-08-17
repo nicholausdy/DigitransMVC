@@ -84,6 +84,46 @@ class UserController {
       });
     }
   }
+
+  async validateLoginInput() {
+    try {
+      if (Boolean(this.req.body.email) && Boolean(this.req.body.password)) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async login() {
+    try {
+      const isInputValid = await this.validateLoginInput();
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
+      }
+      const user = await User.findByPk(this.req.body.email);
+      if (user === null) {
+        return this.res.status(404).json({ success: false, message: 'User not found' });
+      }
+      if (!(user.IsVerified)) {
+        return this.res.status(404).json({ success: false, message: 'User not verified yet' });
+      }
+      const isHashValid = await HashService.compare(this.req.body.password, user.Password);
+      if (!(isHashValid)) {
+        return this.res.status(403).json({ success: false, message: 'Incorrect password' });
+      }
+      const token = await TokenService.issue({ email: this.req.body.email });
+      return this.res.status(200).json({ success: true, message: token });
+    } catch (error) {
+      console.log(error);
+      return this.res.status(500).json({
+        success: false,
+        message: error.name,
+        detail: error.message,
+      });
+    }
+  }
 }
 
 module.exports = UserController;

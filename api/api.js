@@ -40,6 +40,15 @@ app.get('/private/user/verification/:token', async(req, res) => {
   }
 });
 
+app.post('/public/user/login', async(req, res) => {
+  try {
+    const userController = new UserController(req, res);
+    await userController.login();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
 natsEventListener();
 
 server.listen(config.port, () => {
