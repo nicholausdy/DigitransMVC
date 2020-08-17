@@ -24,4 +24,6 @@ async function natsEventListener() {
   }
 }
 
+natsEventListener();
+
 module.exports = natsEventListener;

@@ -49,8 +49,6 @@ app.post('/public/user/login', async(req, res) => {
   }
 });
 
-natsEventListener();
-
 server.listen(config.port, () => {
   console.log('Maid cafe running on port '.concat(config.port));
 });
