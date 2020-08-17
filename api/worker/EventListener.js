@@ -7,6 +7,7 @@ async function natsEventListener() {
     return new Promise((resolve, reject) => {
       nc.subscribe('mailCall', { queue: 'mailer.workers' }, async (msg) => {
         if (msg) {
+          console.log(msg.email)
           const handler = new MailHandler(msg.email, msg.type, msg.token);
           await handler.send();
           resolve(msg);
