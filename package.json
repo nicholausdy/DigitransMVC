@@ -4,7 +4,11 @@
   "description": "Questionnaire Platform ",
   "main": "./api/api.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run nodemon",
+    "dev": "node ./api/api.js",
+    "nodemon": "nodemon --exec npm run dev",
+    "lint": "eslint ./api. ./config/."
   },
   "repository": {
     "type": "git",
@@ -28,6 +32,7 @@
     "helmet": "^4.1.0",
     "jsonwebtoken": "^8.5.1",
     "nats": "^1.4.12",
+    "nodemailer": "^6.4.11",
     "nodemon": "^2.0.4",
     "pg": "^8.3.0",
     "pg-hstore": "^2.3.3",
