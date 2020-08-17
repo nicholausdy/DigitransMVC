@@ -53,7 +53,7 @@ class UserController {
 
       const [newUser, tokenForMail] = await Promise.all([
         User.create(record),
-        TokenService.issue({ email: this.req.body.email })]);
+        TokenService.issue({ email: this.req.body.email }, '1h')]);
 
       await publisher.publish('mailCall', { email: this.req.body.email, type: 'verification', token: tokenForMail });
       return this.res.status(200).json({ success: true, message: 'Registraton successful. Please check your email' });
@@ -113,7 +113,7 @@ class UserController {
       if (!(isHashValid)) {
         return this.res.status(403).json({ success: false, message: 'Incorrect password' });
       }
-      const token = await TokenService.issue({ email: this.req.body.email });
+      const token = await TokenService.issue({ email: this.req.body.email }, '7d');
       return this.res.status(200).json({ success: true, message: token });
     } catch (error) {
       console.log(error);

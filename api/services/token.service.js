@@ -2,10 +2,10 @@ const jwt = require('jsonwebtoken');
 const config = require('../../config/index');
 
 class TokenService {
-  static async issue(data) {
+  static async issue(data, expiresIn) {
     try {
       return new Promise((resolve, reject) => {
-        jwt.sign(data, config.jwtPass, { expiresIn: '1h' }, (error, token) => {
+        jwt.sign(data, config.jwtPass, { expiresIn }, (error, token) => {
           if (error) {
             reject(error);
           }
