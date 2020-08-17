@@ -4,8 +4,8 @@ const helmet = require('helmet');
 const http = require('http');
 const cors = require('cors');
 
-const natsEventListener = require('./worker/EventListener');
 const UserController = require('./controllers/UserController');
+const QuestionnaireController = require('./controllers/QuestionnaireController');
 const config = require('../config/index');
 
 const app = express();
@@ -47,6 +47,24 @@ app.post('/public/user/login', async(req, res) => {
   } catch (error) {
     return res.status(500).json({ success: false, message: error.name, detail: error.message });
   }
+});
+
+app.post('/private/questionnaire', async (req, res) => {
+  try {
+    const questionnaireController = new QuestionnaireController(req, res)
+    await questionnaireController.createQuestionnaire();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
+app.put('/private/questionnaire', async (req, res) => {
+  try {
+    const questionnaireController = new QuestionnaireController(req, res)
+    await questionnaireController.updateQuestionnaire();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  } 
 });
 
 server.listen(config.port, () => {
