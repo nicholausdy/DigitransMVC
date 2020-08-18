@@ -1,6 +1,8 @@
+const { QueryTypes } = require('sequelize');
 const AuthService = require('../services/auth.service');
 const { Questions } = require('../models/Questions');
 const { Options } = require('../models/Options');
+const { db } = require('../../config/database');
 
 class QuestionController {
   constructor(req, res) {
@@ -118,6 +120,91 @@ class QuestionController {
         body.questionnaire_id, questionPart)
       await QuestionController.parallelOptionsInsert(optionsToBeInserted, Options);
       return this.res.status(200).json({ success: true, message: 'Questions saved'})
+    } catch (error) {
+      return this.res.status(500).json({
+        success: false,
+        message: error.name,
+        detail: error.message,
+      });
+    }
+  }
+
+  static async getQuestionsByQuestionnaireId(questionnaireId) {
+    try {
+      const queryString = ` select question_id, question_description, type, isrequired from 
+        questionnaire inner join questions on 
+        questionnaire.questionnaire_id = questions.questionnaire_id 
+        where questions.questionnaire_id = :questionnaire_id 
+        order by question_id `;
+
+      const queryResult = await db.query(queryString, {
+        replacements: { questionnaire_id: questionnaireId },
+        type: QueryTypes.SELECT,
+      });
+
+      return queryResult;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async getOptionsByQuestionId(questionnaireId, questionId) {
+    try {
+      const queryString = ` select option_id, description, score from options 
+        where questionnaire_id = :questionnaire_id AND question_id = :question_id 
+        order by option_id `;
+
+      const queryResult = await db.query(queryString, {
+        replacements: {
+          questionnaire_id: questionnaireId,
+          question_id: questionId,
+        },
+        type: QueryTypes.SELECT,
+      });
+
+      return queryResult;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async listOfAllOptions (questionnaireId, listOfQuestions) {
+    try {
+      const asyncOp = [];
+      for (let i = 0 ; i < listOfQuestions.length; i++) {
+        const listOfOptions = QuestionController.getOptionsByQuestionId(questionnaireId, i);
+        asyncOp.push(listOfOptions);
+      }
+      const final = await Promise.all(asyncOp);
+      final.sort((a, b) => a - b); // sort ascending
+      return final;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async getQuestions() {
+    try {
+      const tokenDecoded = await AuthService.tokenValidator(this.req);
+      if (!(tokenDecoded.success)) {
+        return this.res.status(403).json(tokenDecoded);
+      }
+      const listOfQuestions = await QuestionController.getQuestionsByQuestionnaireId( 
+        this.req.params.questionnaire_id 
+      );
+      if (typeof listOfQuestions[0] === 'undefined') {
+        return this.res.status(200).json({ success: true, message: listOfQuestions });
+      }
+
+      const listOfListOptions = await QuestionController.listOfAllOptions(
+        this.req.params.questionnaire_id,
+        listOfQuestions
+      );
+
+      for (let i = 0; i < listOfListOptions.length; i++) {
+        listOfQuestions[i].options = listOfListOptions[i];
+      }
+      return this.res.status(200).json({success: true, message: listOfQuestions });
     } catch (error) {
       return this.res.status(500).json({
         success: false,

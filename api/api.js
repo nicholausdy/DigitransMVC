@@ -86,6 +86,15 @@ app.post('/private/getQuestionnaires', async (req, res) => {
   }
 });
 
+app.get('/private/:questionnaire_id/questions', async (req, res) => {
+  try {
+    const questionController = new QuestionController(req, res);
+    await questionController.getQuestions();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
 server.listen(config.port, () => {
   console.log('Maid cafe running on port '.concat(config.port));
 });
