@@ -1,10 +1,16 @@
 const { Op } = require('sequelize');
+const { QueryTypes } = require('sequelize');
+const NATSPublisher = require('../services/publish.service');
 const AuthService = require('../services/auth.service');
 const { Answers } = require('../models/Answers');
 const { Questions } = require('../models/Questions');
-const { QueryTypes } = require('sequelize');
 const { db } = require('../../config/database');
 
+const publisher = new NATSPublisher();
+
+(async () => {
+  await publisher.connect();
+})();
 
 class AnswerController {
   constructor(req, res) {
@@ -132,9 +138,10 @@ class AnswerController {
           body.questionnaire_id,
           answerPart[i]
         );
-        asyncOp.push(updateNumberChosenOp)
+        asyncOp.push(updateNumberChosenOp);
       }
       await Promise.all(asyncOp);
+      await publisher.publish('scoreCall', body);
       return this.res.status(200).json({ success: true, message: 'Answer saved' });
     } catch (error) {
       console.log(error)
