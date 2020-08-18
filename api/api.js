@@ -8,6 +8,7 @@ const UserController = require('./controllers/UserController');
 const QuestionnaireController = require('./controllers/QuestionnaireController');
 const config = require('../config/index');
 const QuestionController = require('./controllers/QuestionController');
+const AnswerController = require('./controllers/AnswerController');
 
 const app = express();
 const server = http.Server(app);
@@ -99,6 +100,15 @@ app.post('/private/getQuestions', async (req, res) => {
   try {
     const questionController = new QuestionController(req, res);
     await questionController.getQuestions();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
+app.post('/public/answer', async (req, res) => {
+  try {
+    const answerController = new AnswerController(req, res);
+    await answerController.answer();
   } catch (error) {
     return res.status(500).json({ success: false, message: error.name, detail: error.message });
   }
