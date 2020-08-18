@@ -65,6 +65,18 @@ class QuestionController {
     }
   }
 
+  async validateQuestions() {
+    try {
+      if (Boolean(this.req.body.questionnaire_id)
+          && Boolean(this.req.body.questions)) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   static async parallelOptionsInsert(listOflist, questionModel) {
     try {
       const result = [];
@@ -83,6 +95,10 @@ class QuestionController {
       const tokenDecoded = await AuthService.tokenValidator(this.req);
       if (!(tokenDecoded.success)) {
         return this.res.status(403).json(tokenDecoded);
+      }
+      const isInputValid = await this.validateQuestions();
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected'});
       }
       const { body } = this.req;
       const questionPart = body.questions 
