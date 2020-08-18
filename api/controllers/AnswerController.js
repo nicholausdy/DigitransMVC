@@ -123,6 +123,8 @@ class AnswerController {
         return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
       }
       const { body } = this.req;
+      const listOfObjectToInsert = await AnswerController.createListOfObjectToBeInserted(body);
+      await Answers.bulkCreate(listOfObjectToInsert);
       const answerPart = body.answers;
       const asyncOp = [];
       for ( let i = 0 ; i < answerPart.length; i++) {
@@ -133,8 +135,6 @@ class AnswerController {
         asyncOp.push(updateNumberChosenOp)
       }
       await Promise.all(asyncOp);
-      const listOfObjectToInsert = await AnswerController.createListOfObjectToBeInserted(body);
-      await Answers.bulkCreate(listOfObjectToInsert);
       return this.res.status(200).json({ success: true, message: 'Answer saved' });
     } catch (error) {
       console.log(error)
