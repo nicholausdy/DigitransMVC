@@ -79,12 +79,19 @@ class QuestionController {
     }
   }
 
-  static async parallelOptionsInsert(listOflist, questionModel) {
+  static async parallelOptionsInsert(listOflist, optionModel, isUpsert) {
     try {
       const result = [];
-      for (let i = 0; i < listOflist.length; i++ ) {
-        const asyncOp = questionModel.bulkCreate(listOflist[i]);
-        result.push(asyncOp)
+      for (let i = 0; i < listOflist.length; i++) {
+        if (!(isUpsert)) {
+          const asyncOp = optionModel.bulkCreate(listOflist[i]);
+          result.push(asyncOp);
+        } else {
+          const asyncOp = optionModel.bulkCreate(listOflist[i], {
+            updateOnDuplicate: ['description', 'score']
+          });
+          result.push(asyncOp);
+        }
       }
       await Promise.all(result);
     } catch (error) {
@@ -92,7 +99,7 @@ class QuestionController {
     }
   }
 
-  async createQuestions() {
+  async createQuestions(isUpsert) {
     try {
       const tokenDecoded = await AuthService.tokenValidator(this.req);
       if (!(tokenDecoded.success)) {
@@ -106,7 +113,14 @@ class QuestionController {
       const questionPart = body.questions 
       const listOfQuestionsOnly = await QuestionController.getListOfQuestions(body.questionnaire_id,
         questionPart);
-      await Questions.bulkCreate(listOfQuestionsOnly);
+      if (!(isUpsert)) {
+        await Questions.bulkCreate(listOfQuestionsOnly);
+      } else {
+        await Questions.bulkCreate(listOfQuestionsOnly,
+          {
+            updateOnDuplicate: ['question_description', 'type', 'isrequired']
+          });
+      }
       // for ( let i = 0; i < questionPart.length; i++) {
       //  if (Boolean(questionPart[i].options)) {
       //    const optionPart = questionPart[i].options;
@@ -118,8 +132,8 @@ class QuestionController {
       // }
       const optionsToBeInserted = await QuestionController.parallelGetListOfOptions(
         body.questionnaire_id, questionPart)
-      await QuestionController.parallelOptionsInsert(optionsToBeInserted, Options);
-      return this.res.status(200).json({ success: true, message: 'Questions saved'})
+      await QuestionController.parallelOptionsInsert(optionsToBeInserted, Options, isUpsert);
+      return this.res.status(200).json({ success: true, message: 'Questions saved'});
     } catch (error) {
       return this.res.status(500).json({
         success: false,

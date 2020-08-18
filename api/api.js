@@ -70,8 +70,17 @@ app.put('/private/questionnaire', async (req, res) => {
 
 app.post('/private/questions', async (req, res) => {
   try {
-    const questionController = new QuestionController(req, res)
-    await questionController.createQuestions();
+    const questionController = new QuestionController(req, res);
+    await questionController.createQuestions(false);
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
+app.put('/private/questions', async (req, res) => {
+  try {
+    const questionController = new QuestionController(req, res);
+    await questionController.createQuestions(true);
   } catch (error) {
     return res.status(500).json({ success: false, message: error.name, detail: error.message });
   }
