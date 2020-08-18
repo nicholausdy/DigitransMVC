@@ -5,7 +5,7 @@ const AuthService = require('../services/auth.service');
 const { Answers } = require('../models/Answers');
 const { Questions } = require('../models/Questions');
 const { db } = require('../../config/database');
-const Scores = require('../models/Scores');
+const { Scores } = require('../models/Scores');
 
 const publisher = new NATSPublisher();
 
