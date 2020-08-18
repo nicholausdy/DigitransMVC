@@ -86,7 +86,7 @@ app.post('/private/getQuestionnaires', async (req, res) => {
   }
 });
 
-app.get('/private/:questionnaire_id/questions', async (req, res) => {
+app.post('/private/:questionnaire_id/questions', async (req, res) => {
   try {
     const questionController = new QuestionController(req, res);
     await questionController.getQuestions();

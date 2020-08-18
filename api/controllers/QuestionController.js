@@ -183,21 +183,36 @@ class QuestionController {
     }
   }
 
+  async validateGetQuestionInput() {
+    try {
+      if (Boolean(this.req.body.questionnaire_id)) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   async getQuestions() {
     try {
       const tokenDecoded = await AuthService.tokenValidator(this.req);
       if (!(tokenDecoded.success)) {
         return this.res.status(403).json(tokenDecoded);
       }
+      const isInputValid = await this.validateGetQuestionInput();
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected'});
+      }
       const listOfQuestions = await QuestionController.getQuestionsByQuestionnaireId( 
-        this.req.params.questionnaire_id 
+        this.req.body.questionnaire_id 
       );
       if (typeof listOfQuestions[0] === 'undefined') {
         return this.res.status(200).json({ success: true, message: listOfQuestions });
       }
 
       const listOfListOptions = await QuestionController.listOfAllOptions(
-        this.req.params.questionnaire_id,
+        this.req.body.questionnaire_id,
         listOfQuestions
       );
 
@@ -206,7 +221,7 @@ class QuestionController {
       }
 
       const result = { 
-        questionnaire_id: this.req.params.questionnaire_id,
+        questionnaire_id: this.req.body.questionnaire_id,
         questions: listOfQuestions,
       };
 
