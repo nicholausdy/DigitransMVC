@@ -45,6 +45,39 @@ class QuestionController {
     }
   }
 
+  static async parallelGetListOfOptions(questionnaireId, questionPart) {
+    try {
+      const result = [];
+      for ( let i = 0; i < questionPart.length; i++) {
+        if (Boolean(questionPart[i].options)) {
+          const optionPart = questionPart[i].options;
+          const listOfOptionsOnly = QuestionController.getListOfOptions(
+            questionnaireId, i, optionPart
+          )
+          result.push(listOfOptionsOnly);
+        }
+      }
+      const final = await Promise.all(result);
+      return final;
+    }
+    catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async parallelOptionsInsert(listOflist, questionModel) {
+    try {
+      const result = [];
+      for (let i = 0; i < listOflist.length; i++ ) {
+        const asyncOp = questionModel.bulkCreate(listOflist[i]);
+        result.push(asyncOp)
+      }
+      await Promise.all(result);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   async createQuestions() {
     try {
       const tokenDecoded = await AuthService.tokenValidator(this.req);
@@ -56,15 +89,18 @@ class QuestionController {
       const listOfQuestionsOnly = await QuestionController.getListOfQuestions(body.questionnaire_id,
         questionPart);
       await Questions.bulkCreate(listOfQuestionsOnly);
-      for ( let i = 0; i < questionPart.length; i++) {
-        if (Boolean(questionPart[i].options)) {
-          const optionPart = questionPart[i].options;
-          const listOfOptionsOnly = await QuestionController.getListOfOptions(
-            body.questionnaire_id, i, optionPart 
-          )
-          await Options.bulkCreate(listOfOptionsOnly);
-        }
-      }
+      // for ( let i = 0; i < questionPart.length; i++) {
+      //  if (Boolean(questionPart[i].options)) {
+      //    const optionPart = questionPart[i].options;
+      //    const listOfOptionsOnly = await QuestionController.getListOfOptions(
+      //      body.questionnaire_id, i, optionPart 
+      //    )
+      //    await Options.bulkCreate(listOfOptionsOnly);
+      //  }
+      // }
+      const optionsToBeInserted = await QuestionController.parallelGetListOfOptions(
+        body.questionnaire_id, questionPart)
+      await QuestionController.parallelOptionsInsert(optionsToBeInserted, Options);
       return this.res.status(200).json({ success: true, message: 'Questions saved'})
     } catch (error) {
       return this.res.status(500).json({

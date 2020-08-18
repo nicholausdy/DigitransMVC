@@ -68,7 +68,7 @@ app.put('/private/questionnaire', async (req, res) => {
   }
 });
 
-app.post('/private/options', async (req, res) => {
+app.post('/private/questions', async (req, res) => {
   try {
     const questionController = new QuestionController(req, res)
     await questionController.createQuestions();
