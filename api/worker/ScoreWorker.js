@@ -66,7 +66,7 @@ class ScoreHandler {
         const questionType = await ScoreHandler.getQuestionInfo(this.msg.questionnaire_id,
           this.msg.answers[i].question_id)
         if ((questionType === 'checkbox') || (questionType === 'radio')) {
-          scoreResult += await ScoreHandler.calculateScoreOfSingleObject(this.msq.questionnaire_id,
+          scoreResult += await ScoreHandler.calculateScoreOfSingleObject(this.msg.questionnaire_id,
             this.msg.answers[i]);
         }
       }
