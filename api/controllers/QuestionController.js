@@ -204,7 +204,13 @@ class QuestionController {
       for (let i = 0; i < listOfListOptions.length; i++) {
         listOfQuestions[i].options = listOfListOptions[i];
       }
-      return this.res.status(200).json({success: true, message: listOfQuestions });
+
+      const result = { 
+        questionnaire_id: this.req.params.questionnaire_id,
+        questions: listOfQuestions,
+      };
+
+      return this.res.status(200).json({ success: true, message: result });
     } catch (error) {
       return this.res.status(500).json({
         success: false,
