@@ -152,6 +152,108 @@ class AnswerController {
       });
     }
   }
+  
+  static async getQuestionType(questionnaireId, questionId) {
+    try {
+      const questionInfo = await Questions.findOne({
+        attributes: ['type'],
+        where: {
+          [Op.and]: [
+            { questionnaire_id: questionnaireId },
+            { question_id: questionId },
+          ],
+        },
+      });
+      return questionInfo.type;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async getAnswersFromDB(questionnaireId, answererEmail) {
+    try {
+      const queryResult = await Answers.findAll({
+        where: {
+          [Op.and]: [
+            { questionnaire_id: questionnaireId },
+            { answerer_email: answererEmail },
+          ],
+        },
+      });
+      return queryResult;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async answerPartFormatter(queryResult) {
+    try {
+      const listofAnswer = [];
+      for ( let i = 0; i < queryResult.length; i++) {
+        const answerObject = {};
+        answerObject.question_id = queryResult[i].question_id;
+        const questionType = await AnswerController.getQuestionType(
+          queryResult[i].questionnaire_id,
+          queryResult[i].question_id);
+        if (questionType === 'checkbox' || questionType === 'radio') {
+          answerObject.answer = queryResult[i].option_id;
+        } else {
+          const singleElementList = [];
+          singleElementList.push(queryResult[i].text_answer);
+          answerObject.answer = singleElementList;
+        }
+        listofAnswer.push(answerObject);
+      }
+      return listofAnswer;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async validateGetSingleAnswerInput() {
+    try {
+      if (Boolean(this.req.body.questionnaire_id
+          && Boolean(this.req.body.answerer_email))) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async getSingleAnswer() {
+    try {
+      const tokenDecoded = await AuthService.tokenValidator(this.req);
+      if (!(tokenDecoded.success)) {
+        return this.res.status(403).json(tokenDecoded);
+      }
+      const isInputValid = await this.validateGetSingleAnswerInput();
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected'});
+      }
+      const { body } = this.req;
+      const queryResult = await AnswerController.getAnswersFromDB(
+        body.questionnaire_id,
+        body.answerer_email,
+      );
+      const answerPart = await AnswerController.answerPartFormatter(queryResult);
+      const result = {
+        questionnaire_id: queryResult[0].questionnaire_id,
+        answerer_name: queryResult[0].answerer_name,
+        answerer_email: queryResult[0].answerer_email,
+        answerer_company: queryResult[0].answerer_company,
+        answers: answerPart,
+      };
+      return this.res.status(200).json({ success: true, message: result });
+    } catch (error) {
+      return this.res.status(500).json({
+        success: false,
+        message: error.name,
+        detail: error.message,
+      });
+    }
+  }
 }
 
 module.exports = AnswerController;
