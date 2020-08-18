@@ -5,6 +5,7 @@ const AuthService = require('../services/auth.service');
 const { Answers } = require('../models/Answers');
 const { Questions } = require('../models/Questions');
 const { db } = require('../../config/database');
+const Scores = require('../models/Scores');
 
 const publisher = new NATSPublisher();
 
@@ -237,6 +238,9 @@ class AnswerController {
         body.questionnaire_id,
         body.answerer_email,
       );
+      if (typeof queryResult[0] === 'undefined') {
+        return this.res.status(200).json({ success: true, message: [] });
+      }
       const answerPart = await AnswerController.answerPartFormatter(queryResult);
       const result = {
         questionnaire_id: queryResult[0].questionnaire_id,
@@ -244,6 +248,75 @@ class AnswerController {
         answerer_email: queryResult[0].answerer_email,
         answerer_company: queryResult[0].answerer_company,
         answers: answerPart,
+      };
+      return this.res.status(200).json({ success: true, message: result });
+    } catch (error) {
+      return this.res.status(500).json({
+        success: false,
+        message: error.name,
+        detail: error.message,
+      });
+    }
+  }
+
+  static async getScoresFromDB(questionnaireId) {
+    try {
+      const queryResult = await Scores.findAll({
+        where: {
+          questionnaire_id: questionnaireId,
+        },
+      });
+      return queryResult;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async scorePartFormatter(queryResult) {
+    try {
+      const result = [];
+      for (let i = 0; i < queryResult.length; i++) {
+        const object = {};
+        object.answerer_email = queryResult[i].answerer_email;
+        object.total_score = queryResult[i].total_score;
+        result.push(object);
+      }
+      return result;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async validateGetScoreInput() {
+    try {
+      if (Boolean(this.req.body.questionnaire_id)) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async getScores() {
+    try {
+      const tokenDecoded = await AuthService.tokenValidator(this.req);
+      if (!(tokenDecoded.success)) {
+        return this.res.status(403).json(tokenDecoded);
+      }
+      const isInputValid = await this.validateGetScoreInput();
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
+      }
+      const { body } = this.req;
+      const queryResult = await AnswerController.getScoresFromDB(body.questionnaire_id);
+      if (typeof queryResult[0] === 'undefined') {
+        return this.res.status(200).json({ success: true, message: [] });
+      }
+      const scoresPart = await AnswerController.scorePartFormatter(queryResult);
+      const result = {
+        questionnaire_id: body.questionnaire_id,
+        scores: scoresPart,
       };
       return this.res.status(200).json({ success: true, message: result });
     } catch (error) {

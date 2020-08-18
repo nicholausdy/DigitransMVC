@@ -123,6 +123,15 @@ app.post('/private/getAnswer', async (req, res) => {
   }
 });
 
+app.post('/private/getScores', async (req, res) => {
+  try {
+    const answerController = new AnswerController(req, res);
+    await answerController.getScores();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
 server.listen(config.port, () => {
   console.log('Maid cafe running on port '.concat(config.port));
 });
