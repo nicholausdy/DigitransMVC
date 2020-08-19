@@ -17,6 +17,8 @@ class AuthService {
         token = tokenParts[1];
       } else if (tokenParts.length === 1) {
         token = tokenParts[0];
+      } else {
+        return { success: false, message: 'Format should be Authorization:Bearer <token> or Authorization:<token>' };
       }
       const decodedToken = await TokenService.verify(token);
       return { success: true, message: decodedToken };
