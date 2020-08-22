@@ -11,6 +11,7 @@ const db = new Sequelize(
     dialectOptions: {
       ssl: true,
       rejectUnauthorized: false,
+      checkServerIdentity: false,
     },
     port: stagingDB.port,
     pool: {
