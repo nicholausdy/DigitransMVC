@@ -2,7 +2,7 @@ const fs = require('fs');
 const Sequelize = require('sequelize');
 const { stagingDB } = require('./connection');
 
-const dbCa = fs.readFileSync('../db-certificate.crt');
+const dbCa = fs.readFileSync('./db-certificate.crt');
 
 const db = new Sequelize(
   stagingDB.database,
