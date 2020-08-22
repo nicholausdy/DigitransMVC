@@ -14,6 +14,7 @@ const db = new Sequelize(
       idle: 5000,
     },
     logging: false,
+    native: true,
   },
 );
 
