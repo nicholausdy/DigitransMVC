@@ -1,5 +1,8 @@
+const fs = require('fs');
 const Sequelize = require('sequelize');
 const { stagingDB } = require('./connection');
+
+const dbCa = fs.readFileSync('../db-certificate.crt');
 
 const db = new Sequelize(
   stagingDB.database,
@@ -9,6 +12,8 @@ const db = new Sequelize(
     dialect: stagingDB.dialect,
     dialectOptions: {
       ssl: true,
+      rejectUnauthorized: true,
+      ca: [dbCa],
     },
     port: stagingDB.port,
     pool: {
