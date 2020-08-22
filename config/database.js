@@ -8,6 +8,14 @@ const db = new Sequelize(
   stagingDB.password, {
     host: stagingDB.host,
     dialect: stagingDB.dialect,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+      keepAlive: true,
+    },
+    ssl: true,
     port: stagingDB.port,
     pool: {
       max: 5,
