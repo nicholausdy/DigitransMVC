@@ -10,3 +10,4 @@ logs
 
 # Certs
 *.pem
+*.crt
