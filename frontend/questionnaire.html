@@ -7,7 +7,10 @@
 
   <title>Questionnaire</title>
 
-  <script src="script/createQuestions.js"></script>
+  <script src="script/createQuestionnaire.js"></script>
+  <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+  <script src="script/questions/event.js"></script>
+  <script src="script/questions/function.js"></script>
 
   <link href='https://fonts.googleapis.com/css?family=Lato:400,300,400italic,700,900' rel='stylesheet' type='text/css'>
 
@@ -100,8 +103,9 @@
 				<td><input type="text" id="description"></td>
 		</table>
 		<!-- Button -->
-		<a class="buttonformmhs" href="#" onclick="createQuestions()">Submit</a>
 		</div>
+  <button class="btn btn-primary" id="tdAddQuestions">Add Questions</button><br>
+  <a class="buttonformmhs" href="#" onclick="createQuestions()">Submit</a>
 
   <!-- Main Scripts-->
   <script src="assets/js/jquery.js"></script>
