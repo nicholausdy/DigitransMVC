@@ -42,7 +42,8 @@ async function createRow(i,questionnaireTitle,questionnaireDescription,questionn
 
 async function getDetails(questionnaireID){
 	window.localStorage.setItem('questionnaireId',questionnaireID);
-	loadQuestions();
+	let urlPart1 = window.location.href.split("/");
+    window.location = urlPart1.splice(0, urlPart1.length - 1).join("/") + "/landingPageAnswer.html";
 }
 
 async function loadQuestionnaires(){
@@ -87,4 +88,18 @@ async function loadQuestions(){
   });
   let data = await response.json();
   console.log(data);
+};
+
+async function submitAnswererData(){
+	let nameElem = document.getElementById('answererName');
+	let emailElem = document.getElementById('answererEmail');
+	let companyElem = document.getElementById('answererCompany');
+
+	window.localStorage.setItem('answererName',nameElem.value);
+	window.localStorage.setItem('answererEmail',emailElem.value);
+	window.localStorage.setItem('answererCompany',companyElem.value);
+
+	let urlPart1 = window.location.href.split("/");
+    window.location =
+    urlPart1.splice(0, urlPart1.length - 1).join("/") + "/answer.html";
 }
