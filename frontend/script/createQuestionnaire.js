@@ -1,13 +1,13 @@
 var url = "http://206.189.153.47:2020";
 
-async function createQuestionnaire(){
+async function createQuestions(){
   let testing_email = localStorage.getItem('email');
   console.log(testing_email);
   let questionnaireTitleElem = document.getElementById("questionnaireTitle");
   let questionnaireDescriptionElem = document.getElementById("questionnaireDescription");
 
 
-  let response = await fetch(`${url}/private/questionnaire`, {
+  let responses = await fetch(`${url}/private/questionnaire`, {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     mode:"cors",
     headers: {
@@ -21,12 +21,9 @@ async function createQuestionnaire(){
       "questionnaire_desc": questionnaireDescriptionElem.value,
     }),
   });
+  let resps = await responses.json();
+  window.localStorage.setItem('questionnaireID',resps.message);
 
-  window.localStorage.setItem('questionnaireID',resp.message);
-
-}
-
-async function createQuestions(){
   let questionnaireId = localStorage.getItem('questionnaireID');
   console.log(questionnaireId);
 
