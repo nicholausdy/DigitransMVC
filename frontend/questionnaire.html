@@ -91,7 +91,7 @@
     <!-- Navs done -->
 
    <div class="tampilanlogin">
-		<table class="tablelogin">
+		<table style="margin-bottom:2%" class="tablelogin">
 			<tr>
 				<td>Title</td>
 				<td><input type="text" id="questionnaireTitle"></td>
@@ -102,9 +102,11 @@
 		</table>
 		<!-- Button -->
 		</div>
-  <button class="btn btn-primary" id="tdAddQuestions" onclick="createDivQuestionsText()">Add Text Questions</button><br>
-  <button class="btn btn-primary" id="tdAddQuestions" onclick="createDivQuestionsRadio()">Add Radio Questions</button><br>
-  <button class="btn btn-primary" id="tdAddQuestions" onclick="createDivQuestionsCheckbox()">Add Checkbox Questions</button><br>
+  <div class="row" style="margin-bottom:1%">
+  <button style="display:inline-block" class="btn btn-primary" id="questionsText" onclick="createDivQuestionsText()">Add Text Questions</button>
+  <button style="display:inline-block" class="btn btn-primary" id="questionsRadio" onclick="createDivQuestionsRadio()">Add Radio Questions</button>
+  <button style="display:inline-block" class="btn btn-primary" id="questionsCheckbox" onclick="createDivQuestionsCheckbox()">Add Checkbox Questions</button>
+  </div>
   <div id="listQuestions"></div>
   <a class="buttonformmhs" href="#" onclick="createQuestionsText()">Submit</a><br><br>
 
