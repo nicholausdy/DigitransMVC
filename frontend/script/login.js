@@ -24,7 +24,7 @@ async function login() {
       if(resp.success==true){
         let urlPart1 = window.location.href.split("/");
            window.location =
-             urlPart1.splice(0, urlPart1.length - 1).join("/") + "/questionnaire.html";
+             urlPart1.splice(0, urlPart1.length - 1).join("/") + "/landingPage.html";
       }
       else{
         alert("Invalid Login");
