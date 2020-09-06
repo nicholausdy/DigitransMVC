@@ -1,9 +1,12 @@
 var url = "http://206.189.153.47:2020";
 var questionsList = [];
 var idNomor = 0;
+var idOptions;
+var idCek = 0;
+var idCheck = 0;
 
 
-async function createQuestionsText(){
+async function createQuestions(){
   let testing_email = localStorage.getItem('email');
   console.log(testing_email);
   let questionnaireTitleElem = document.getElementById("questionnaireTitle");
@@ -30,18 +33,39 @@ async function createQuestionsText(){
   console.log(idNo);
   
   for(let i=1;i<=idNo;i++){
+    let radioList = [];
     console.log(i);
 
     let questionDescriptionElem = document.getElementById('question_description'+[i]);
     let questionTypeElem = document.getElementById('question_type'+[i]);
     let isRequiredElem = document.getElementById('question_isRequired'+[i]);
 
-    const daftarPertanyaan = {
-      question_description: questionDescriptionElem.value,
-      type: questionTypeElem.value,
-      isrequired: isRequiredElem.value,
+    if(questionTypeElem.value === "text"){
+      const daftarPertanyaanText = {
+        question_description: questionDescriptionElem.value,
+        type: questionTypeElem.value,
+        isrequired: isRequiredElem.value,
+      }
+      questionsList.push(daftarPertanyaanText);
     }
-    questionsList.push(daftarPertanyaan);
+    if((questionTypeElem.value === "radio")||(questionTypeElem.value === "checkbox")){
+      const daftarPertanyaanRadio = {
+        question_description: questionDescriptionElem.value,
+        type: questionTypeElem.value,
+        isrequired: isRequiredElem.value,
+        options: radioList,
+      }
+      for(let j=1;j<=idOptions;j++){
+        let optionDescriptionElem = document.getElementById('description'+[j]);
+        let optionScoreElem = document.getElementById('score'+[j]);
+        const listsOfRadio = {
+          "description":optionDescriptionElem.value,
+          "score":parseInt(optionScoreElem.value),
+        }
+        radioList.push(listsOfRadio);
+      }
+      questionsList.push(daftarPertanyaanRadio);
+    }
   };
   console.log(questionsList);
   console.log(JSON.stringify(questionsList));
@@ -124,7 +148,12 @@ async function createDivQuestionsText(){
 };
 
 async function createDivQuestionsRadio(){
- createDivQuestions();
+  idOptions = 0;
+
+  idCheck += 1;
+  window.localStorage.setItem('idChecks',idCheck);
+
+  createDivQuestions();
 
   let questionDescriptionCell = document.createElement('div');
 
@@ -133,6 +162,9 @@ async function createDivQuestionsRadio(){
   let isRequiredCell = document.createElement('div');
 
   let tombolAddOptionCell = document.createElement('div');
+
+  let listsOptionsCell = document.createElement('div');
+  listsOptionsCell.setAttribute('id','listsOptions'+[idCheck]);
 
   let questionTextCell = document.createElement('button');
   questionTextCell.innerHTML = "Add Text Questions";
@@ -162,7 +194,8 @@ async function createDivQuestionsRadio(){
   isRequired.setAttribute('id','question_isRequired'+[idNomor]);
 
   let tombolAddOption = document.createElement('button');
-  tombolAddOption.setAttribute('onclick','addOptions()');  
+  tombolAddOption.setAttribute('onclick','addOptionsRadio()');  
+  tombolAddOption.innerHTML = 'Add Option';
 
   questionDescriptionCell.appendChild(questionDescription);
 
@@ -177,6 +210,7 @@ async function createDivQuestionsRadio(){
   container.appendChild(typeCell);
   container.appendChild(isRequiredCell);
   container.appendChild(tombolAddOptionCell);
+  container.appendChild(listsOptionsCell);
   container.appendChild(questionTextCell);
   container.appendChild(questionRadioCell);
   container.appendChild(questionCheckboxCell);
@@ -188,6 +222,11 @@ async function createDivQuestionsRadio(){
 };
 
 async function createDivQuestionsCheckbox(){
+  idOptions = 0;
+
+  idCek += 1;
+  window.localStorage.setItem('idChecking',idCek);
+
   createDivQuestions();
 
   let questionDescriptionCell = document.createElement('div');
@@ -195,6 +234,11 @@ async function createDivQuestionsCheckbox(){
   let typeCell = document.createElement('div');
 
   let isRequiredCell = document.createElement('div');
+
+  let tombolAddOptionCell = document.createElement('div');
+
+  let listsOptionsCell = document.createElement('div');
+  listsOptionsCell.setAttribute('id','listsOptionsCheckbox'+[idCek]);
 
   let questionTextCell = document.createElement('button');
   questionTextCell.innerHTML = "Add Text Questions";
@@ -223,16 +267,24 @@ async function createDivQuestionsCheckbox(){
   let isRequired = document.createElement('input');
   isRequired.setAttribute('id','question_isRequired'+[idNomor]);
 
+  let tombolAddOption = document.createElement('button');
+  tombolAddOption.setAttribute('onclick','addOptionsCheckbox()');  
+  tombolAddOption.innerHTML = 'Add Option';
+
   questionDescriptionCell.appendChild(questionDescription);
 
   typeCell.appendChild(type);
 
   isRequiredCell.appendChild(isRequired);
 
+  tombolAddOptionCell.appendChild(tombolAddOption);
+
   let container = document.createElement('div');
   container.appendChild(questionDescriptionCell);
   container.appendChild(typeCell);
   container.appendChild(isRequiredCell);
+  container.appendChild(tombolAddOptionCell);
+  container.appendChild(listsOptionsCell);
   container.appendChild(questionTextCell);
   container.appendChild(questionRadioCell);
   container.appendChild(questionCheckboxCell);
@@ -243,6 +295,61 @@ async function createDivQuestionsCheckbox(){
   window.localStorage.setItem('idNumber',idNomor);
 };
 
-async function addOptions(){
+
+async function addOptionsRadio(){
+  idOptions = idOptions + 1;
+
+  let idMengecek = localStorage.getItem('idChecks');
+
+  let listOptions = document.createElement('div');
+  listOptions.setAttribute('id','listsOptions');
+
+  let optionDescriptionCell = document.createElement('div');
+
+  let optionScoreCell = document.createElement('div');
+
+  description = document.createElement('input');
+  description.setAttribute('id','description'+[idOptions]);
+
+  score = document.createElement('input');
+  score.setAttribute('id','score'+[idOptions]);
+
+  optionDescriptionCell.appendChild(description);
+  optionScoreCell.appendChild(score);
+
+  let container = document.createElement('div');
+  container.appendChild(optionDescriptionCell);
+  container.appendChild(optionScoreCell);
+
+  let section = document.getElementById('listsOptions'+[idMengecek]);
+  section.appendChild(container);
+};
+
+async function addOptionsCheckbox(){
+  idOptions = idOptions + 1;
   
-}
+  let idMengecek = localStorage.getItem('idChecking');
+
+  let listOptions = document.createElement('div');
+  listOptions.setAttribute('id','listsOptions');
+
+  let optionDescriptionCell = document.createElement('div');
+
+  let optionScoreCell = document.createElement('div');
+
+  description = document.createElement('input');
+  description.setAttribute('id','description'+[idOptions]);
+
+  score = document.createElement('input');
+  score.setAttribute('id','score'+[idOptions]);
+
+  optionDescriptionCell.appendChild(description);
+  optionScoreCell.appendChild(score);
+
+  let container = document.createElement('div');
+  container.appendChild(optionDescriptionCell);
+  container.appendChild(optionScoreCell);
+
+  let section = document.getElementById('listsOptionsCheckbox'+[idMengecek]);
+  section.appendChild(container);
+};
