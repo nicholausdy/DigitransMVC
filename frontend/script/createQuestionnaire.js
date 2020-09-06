@@ -1,6 +1,6 @@
 var url = "http://206.189.153.47:2020";
 
-async function createQuestions(){
+async function createQuestionsText(){
   let testing_email = localStorage.getItem('email');
   console.log(testing_email);
   let questionnaireTitleElem = document.getElementById("questionnaireTitle");
@@ -59,12 +59,25 @@ async function createQuestions(){
   console.log(result);
 };
 
-async function createDivQuestions(){
+async function createDivQuestionsText(){
   let questionDescriptionCell = document.createElement('div');
 
   let typeCell = document.createElement('div');
 
   let isRequiredCell = document.createElement('div');
+
+  let questionTextCell = document.createElement('button');
+  questionTextCell.innerHTML = "Add Text Questions";
+  questionTextCell.setAttribute('class','btn btn-primary');
+  questionTextCell.setAttribute('onclick','createDivQuestionsText()');
+
+  let questionRadioCell = document.createElement('button');
+  questionRadioCell.innerHTML = "Add Radio Questions";
+  questionRadioCell.setAttribute('class','btn btn-primary');
+
+  let questionCheckboxCell = document.createElement('button');
+  questionCheckboxCell.innerHTML = "Add Checkbox Questions";
+  questionCheckboxCell.setAttribute('class','btn btn-primary');
 
   let questionDescription = document.createElement('input');
   questionDescription.setAttribute('id','question_description');
@@ -85,6 +98,9 @@ async function createDivQuestions(){
   container.appendChild(questionDescriptionCell);
   container.appendChild(typeCell);
   container.appendChild(isRequiredCell);
+  container.appendChild(questionTextCell);
+  container.appendChild(questionRadioCell);
+  container.appendChild(questionCheckboxCell);
 
   let section = document.getElementById('listQuestions');
   section.appendChild(container);
