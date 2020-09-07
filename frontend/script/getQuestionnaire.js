@@ -23,7 +23,7 @@ async function createRow(i,questionnaireTitle,questionnaireDescription,questionn
 	let hapusCell = document.createElement('td');
 	hapusCell.innerHTML = `<span class="label label-danger pull-left">hapus</span>`
 
-	detailCell.addEventListener('click', () => getDetails(questionnaireId));
+	detailCell.addEventListener('click', () => getDetails(questionnaireId,questionnaireTitle,questionnaireDescription));
 	//editCell.addEventListener('click', () => getUpdate(idKelas));
 
 	
@@ -40,15 +40,16 @@ async function createRow(i,questionnaireTitle,questionnaireDescription,questionn
 	table.appendChild(row);
 }
 
-async function getDetails(questionnaireID){
+async function getDetails(questionnaireID,questionnaireTitle,questionnaireDescription){
 	window.localStorage.setItem('questionnaireId',questionnaireID);
+  window.localStorage.setItem('questionnaireTitle',questionnaireTitle);
+  window.localStorage.setItem('questionnaireDescription',questionnaireDescription);
 	let urlPart1 = window.location.href.split("/");
     window.location = urlPart1.splice(0, urlPart1.length - 1).join("/") + "/landingPageAnswer.html";
 }
 
 async function loadQuestionnaires(){
 	let email = localStorage.getItem('email');
-
 
 	let response = await fetch(`${url}/private/getQuestionnaires`,{
     method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -88,6 +89,25 @@ async function loadQuestions(){
   });
   let data = await response.json();
   console.log(data);
+  let item = data.message;
+  let component = item.questions;
+  for(let i=0;i<component.length;i++){
+  	if(component[i].type === "text"){
+  		createContainerText(component[i].question_description);
+  	}
+  	if(component[i].type === "radio"){
+  		createContainerRadio(component[i].question_description,component[i].score,component[i].options.length);
+      for(let j=0;j<component[i].options.length;j++){
+        createOptionsRadio(component[i].options[j].description,component[i].options[j].score);
+      }
+  	}
+  	if(component[i].type === "checkbox"){
+  		createContainerCheckbox(component[i].question_description,component[i].score,component[i].options.length);
+      for(let j=0;j<component[i].options.length;j++){
+        createOptionsCheckbox(component[i].options[j].description,component[i].options[j].score);
+      }
+  	}
+  }
 };
 
 async function submitAnswererData(){

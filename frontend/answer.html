@@ -8,6 +8,8 @@
   <title>Questionnaire</title>
 
   <script src="script/createQuestionnaire.js"></script>
+  <script src="script/getQuestionnaire.js"></script>
+  <script src="script/answer.js"></script>
 
 
   <link href='https://fonts.googleapis.com/css?family=Lato:400,300,400italic,700,900' rel='stylesheet' type='text/css'>
@@ -93,22 +95,22 @@
    <div class="tampilanlogin">
 		<table style="margin-bottom:2%" class="tablelogin">
 			<tr>
-				<td>Title</td>
-				<td><input type="text" id="questionnaireTitle"></td>
+				<td style="padding-right:3%">Title</td>
+        
+				<td id="getQuestionnaireTitle"></td>
 			</tr>
 			<tr>
-				<td>Description</td>
-				<td><input type="text" id="questionnaireDescription"></td>
+				<td style="padding-right:3%">Description</td>
+        <td></td>
+				<td id="getQuestionnaireDescription"></td>
 		</table>
 		<!-- Button -->
 		</div>
   <div class="row" style="margin-bottom:1%">
-  <button style="display:inline-block" class="btn btn-primary" id="questionsText" onclick="createDivQuestionsText()">Add Text Questions</button>
-  <button style="display:inline-block" class="btn btn-primary" id="questionsRadio" onclick="createDivQuestionsRadio()">Add Radio Questions</button>
-  <button style="display:inline-block" class="btn btn-primary" id="questionsCheckbox" onclick="createDivQuestionsCheckbox()">Add Checkbox Questions</button>
+
   </div>
-  <div id="listQuestions"></div>
-  <a class="buttonformmhs" href="#" onclick="createQuestions()">Submit</a><br><br>
+  <div id="listAnswers"></div>
+  <a class="buttonformmhs" href="#" onclick="answerQuestions()">Submit</a><br><br>
 
   <a href="landingPage.html"><button class="btn btn-info">Back</button>
   <!-- Main Scripts-->
@@ -118,7 +120,8 @@
   <!-- Bootstrap 3 has typeahead optionally -->
   <script src="assets/js/typeahead.min.js"></script>
   <script>
-    
+    window.onload=loadQuestions();
+    window.onload=isiDeskripsiQuestionnaire();
   </script>
 
 </body>
