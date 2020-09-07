@@ -120,6 +120,27 @@ async function createOptionsCheckbox(description,point){
 };
 
 async function answerQuestions(){
+
+	let data = await fetch(`${url}/private/getQuestions`,{
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    mode:"cors",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: JSON.stringify({
+      "questionnaire_id":localStorage.getItem('questionnaireId'),
+    }),
+   });
+   let hasil = await response.json();
+   console.log(hasil);
+   let result = hasil.message;
+   for(let i=0;i<result.length;i++){
+   	
+   } 
+
+
 	let responses = await fetch(`${url}/public/answer`, {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     mode:"cors",

@@ -34,6 +34,7 @@ async function createQuestions(){
   
   for(let i=1;i<=idNo;i++){
     let radioList = [];
+    let checkboxList = []
     console.log(i);
 
     let questionDescriptionElem = document.getElementById('question_description'+[i]);
@@ -48,7 +49,7 @@ async function createQuestions(){
       }
       questionsList.push(daftarPertanyaanText);
     }
-    if((questionTypeElem.value === "radio")||(questionTypeElem.value === "checkbox")){
+    if(questionTypeElem.value === "radio"){
       const daftarPertanyaanRadio = {
         question_description: questionDescriptionElem.value,
         type: questionTypeElem.value,
@@ -65,6 +66,24 @@ async function createQuestions(){
         radioList.push(listsOfRadio);
       }
       questionsList.push(daftarPertanyaanRadio);
+    }
+    if(questionTypeElem.value === "checkbox"){
+      const daftarPertanyaanCheckbox = {
+        question_description: questionDescriptionElem.value,
+        type: questionTypeElem.value,
+        isrequired: isRequiredElem.value,
+        options: checkboxList,
+      }
+      for(let j=1;j<=idOptions;j++){
+        let optionDescriptionElem = document.getElementById('descriptionCheckbox'+[j]);
+        let optionScoreElem = document.getElementById('scoreCheckbox'+[j]);
+        const listsOfCheckbox = {
+          "description":optionDescriptionElem.value,
+          "score":parseInt(optionScoreElem.value),
+        }
+        checkboxList.push(listsOfCheckbox);
+      }
+      questionsList.push(daftarPertanyaanCheckbox);
     }
   };
   console.log(questionsList);
@@ -338,10 +357,10 @@ async function addOptionsCheckbox(){
   let optionScoreCell = document.createElement('div');
 
   description = document.createElement('input');
-  description.setAttribute('id','description'+[idOptions]);
+  description.setAttribute('id','descriptionCheckbox'+[idOptions]);
 
   score = document.createElement('input');
-  score.setAttribute('id','score'+[idOptions]);
+  score.setAttribute('id','scoreCheckbox'+[idOptions]);
 
   optionDescriptionCell.appendChild(description);
   optionScoreCell.appendChild(score);
