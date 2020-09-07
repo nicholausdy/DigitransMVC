@@ -5,7 +5,8 @@ var idCekText = 0;
 var idCekRadio = 0;
 var idCekCheckbox = 0;
 var part = 0;
-
+var idOptions;
+var answerLists = [];
 
 async function isiDeskripsiQuestionnaire(){
 	let titleElem = document.getElementById('getQuestionnaireTitle');
@@ -24,7 +25,7 @@ async function createContainerText(description){
 	let descriptions = document.createTextNode(description);
 
 	let answer = document.createElement('input');
-	answer.setAttribute('id','textAnswer'+[idAnswer]);
+	answer.setAttribute('id','text'+[idAnswer]);
 
 	descriptionCell.appendChild(descriptions);
 	answerCell.appendChild(answer);
@@ -42,6 +43,8 @@ async function createContainerRadio(description,point,length){
 	idAnswer += 1;
 
 	idCekRadio += 1;
+
+	idOptions = 0;
 
 	let descriptionCell = document.createElement('div');
 
@@ -69,6 +72,8 @@ async function createContainerCheckbox(description,point,length){
 
 	idCekCheckbox += 1;
 
+	idOptions = 0;
+
 	let descriptionCell = document.createElement('form');
 
 	let answerCell = document.createElement('form');
@@ -90,10 +95,12 @@ async function createContainerCheckbox(description,point,length){
 };
 
 async function createOptionsRadio(description,point){
+	idOptions = idOptions + 1;
+
 	let containerInput = document.createElement('input');
 	let label = document.createElement('label');
 	containerInput.setAttribute('type','radio');
-	containerInput.setAttribute('id',description);
+	containerInput.setAttribute('id',[idAnswer]+[idOptions]);
 	containerInput.setAttribute('value',description);
 	containerInput.setAttribute('name','description'+[idCekRadio]);
 	label.appendChild(containerInput);
@@ -105,10 +112,12 @@ async function createOptionsRadio(description,point){
 }
 
 async function createOptionsCheckbox(description,point){
+	idOptions = idOptions + 1;
+
 	let containerInput = document.createElement('input');
 	let label = document.createElement('label');
 	containerInput.setAttribute('type','checkbox');
-	containerInput.setAttribute('id',description);
+	containerInput.setAttribute('id',[idAnswer]+[idOptions]);
 	containerInput.setAttribute('value',description);
 	containerInput.setAttribute('name','description'+[idCekCheckbox]);
 	label.appendChild(containerInput);
@@ -133,14 +142,27 @@ async function answerQuestions(){
       "questionnaire_id":localStorage.getItem('questionnaireId'),
     }),
    });
-   let hasil = await response.json();
+   let hasil = await data.json();
    console.log(hasil);
-   let result = hasil.message;
+   let result = hasil.message.questions;
    for(let i=0;i<result.length;i++){
+   	if(result[i].type === "text"){
+   	let hasilText = document.getElementById('text'+[i+1]);
+   		const answers = {
+   			question_id: i,
+   			answer: hasilText.value,
+   		}
+   		answerLists.push(answers);
+   	}
    	
-   } 
-
-
+   	//if(result[i].type === "radio"){
+   		
+   	//}
+   	//if(result[i].type === "checkbox"){
+   		
+   	//}
+   }
+   console.log(JSON.stringify(answerLists));
 	let responses = await fetch(`${url}/public/answer`, {
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     mode:"cors",
@@ -153,8 +175,15 @@ async function answerQuestions(){
       "answerer_name": localStorage.getItem('answererName'),
       "answerer_email": localStorage.getItem('answererEmail'),
       "answerer_company": localStorage.getItem('answererCompany'),
-      "answers":answersList,
+      "answers":answerLists,
     }),
   });
   let resps = await responses.json();
+  console.log(JSON.stringify({
+      "questionnaire_id": localStorage.getItem('questionnaireId'),
+      "answerer_name": localStorage.getItem('answererName'),
+      "answerer_email": localStorage.getItem('answererEmail'),
+      "answerer_company": localStorage.getItem('answererCompany'),
+      "answers":answerLists,
+    }));
 }
