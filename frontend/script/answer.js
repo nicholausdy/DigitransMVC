@@ -129,7 +129,8 @@ async function createOptionsCheckbox(description,point){
 };
 
 async function answerQuestions(){
-
+	let answersRadio =[];
+	let answersCheckbox =[];
 	let data = await fetch(`${url}/private/getQuestions`,{
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     mode:"cors",
@@ -146,21 +147,46 @@ async function answerQuestions(){
    console.log(hasil);
    let result = hasil.message.questions;
    for(let i=0;i<result.length;i++){
+
    	if(result[i].type === "text"){
    	let hasilText = document.getElementById('text'+[i+1]);
    		const answers = {
    			question_id: i,
-   			answer: hasilText.value,
+   			answer: [hasilText.value],
    		}
-   		answerLists.push(answers);
+   	answerLists.push(answers);
    	}
-   	
-   	//if(result[i].type === "radio"){
-   		
-   	//}
-   	//if(result[i].type === "checkbox"){
-   		
-   	//}
+
+   	if(result[i].type === "radio"){
+   		const jawabanRadio = {
+   			question_id:i,
+   			answer: answersRadio,
+   		}
+   		for(let j=0;j<result[i].options.length;j++){
+   			if(document.getElementById([i+1]+[j+1]).checked){
+	   			const listsOfRadioAnswers = [];
+	   				listsOfRadioAnswers.push([j]);
+	   		}
+   		answersRadio.push(listsOfRadioAnswers);
+   		}
+   	answersLists.push(answersRadio);
+   	}
+
+   	if(result[i].type === "checkbox"){
+   		const jawabanCheckbox = {
+   			question_id:i,
+   			answer: answersCheckbox,
+   		}
+   		for(let j=0;j<result[i].options.length;j++){
+   			if(document.getElementById([i+1]+[j+1]).checked){
+	   			const listsOfCheckBoxAnswers = [];
+	   				listsOfCheckboxAnswers.push([j]);
+	   		}
+   		answersCheckbox.push(listsOfCheckboxAnswers);
+   		}
+   	answerLists.push(answersCheckbox);
+   	}
+
    }
    console.log(JSON.stringify(answerLists));
 	let responses = await fetch(`${url}/public/answer`, {
@@ -179,6 +205,7 @@ async function answerQuestions(){
     }),
   });
   let resps = await responses.json();
+  console.log(resps);
   console.log(JSON.stringify({
       "questionnaire_id": localStorage.getItem('questionnaireId'),
       "answerer_name": localStorage.getItem('answererName'),
