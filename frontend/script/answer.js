@@ -4,6 +4,7 @@ var score = 0;
 var idCekText = 0;
 var idCekRadio = 0;
 var idCekCheckbox = 0;
+var part = 0;
 
 
 async function isiDeskripsiQuestionnaire(){
@@ -94,7 +95,7 @@ async function createOptionsRadio(description,point){
 	containerInput.setAttribute('type','radio');
 	containerInput.setAttribute('id',description);
 	containerInput.setAttribute('value',description);
-	containerInput.setAttribute('name',description);
+	containerInput.setAttribute('name','description'+[idCekRadio]);
 	label.appendChild(containerInput);
 	label.innerHTML += description;
 	score = score + point;
@@ -109,7 +110,7 @@ async function createOptionsCheckbox(description,point){
 	containerInput.setAttribute('type','checkbox');
 	containerInput.setAttribute('id',description);
 	containerInput.setAttribute('value',description);
-	containerInput.setAttribute('name',description);
+	containerInput.setAttribute('name','description'+[idCekCheckbox]);
 	label.appendChild(containerInput);
 	label.innerHTML += description;
 	score = score + point;
