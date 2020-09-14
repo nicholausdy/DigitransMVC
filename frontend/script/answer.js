@@ -164,12 +164,10 @@ async function answerQuestions(){
    		}
    		for(let j=0;j<result[i].options.length;j++){
    			if(document.getElementById([i+1]+[j+1]).checked){
-	   			const listsOfRadioAnswers = [];
-	   				listsOfRadioAnswers.push([j]);
+	   				answersRadio.push(j);
 	   		}
-   		answersRadio.push(listsOfRadioAnswers);
    		}
-   	answersLists.push(answersRadio);
+   	answerLists.push(jawabanRadio);
    	}
 
    	if(result[i].type === "checkbox"){
@@ -179,12 +177,10 @@ async function answerQuestions(){
    		}
    		for(let j=0;j<result[i].options.length;j++){
    			if(document.getElementById([i+1]+[j+1]).checked){
-	   			const listsOfCheckBoxAnswers = [];
-	   				listsOfCheckboxAnswers.push([j]);
+	   				answersCheckbox.push(j);
 	   		}
-   		answersCheckbox.push(listsOfCheckboxAnswers);
    		}
-   	answerLists.push(answersCheckbox);
+   	answerLists.push(jawabanCheckbox);
    	}
 
    }
