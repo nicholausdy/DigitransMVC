@@ -8,7 +8,7 @@
   <title>Questionnaire</title>
 
   <script src="script/getQuestionnaire.js"></script>
-
+  <script src="script/updateQuestionnaire.js"></script>
 
   <link href='https://fonts.googleapis.com/css?family=Lato:400,300,400italic,700,900' rel='stylesheet' type='text/css'>
 
@@ -107,6 +107,40 @@
               </thead>
    				<tbody id="listOfQuestionnaires"></tbody>
    	</table>
+  
+  <!-- Modal -->
+  <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Update Questionnaire</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-left:3%">
+          <p style="display:inline-block">questionnaire title</p>
+          <input id="editQuestionnaireTitle"></input>
+        </div>
+        <div class="row" style="margin-left:3%">
+          <p style="display:inline-block">questionnaire Description</p>
+          <input id="editQuestionnaireDescription"></input>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button onclick="updateQuestionnaire()" type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <div id="modalUpdateQuestionnaire" class="modal">
+    <div class="modal-content">
+
+    </div>
+  </div>
+
   <a href="landingPage.html"><button class="btn btn-info">Back</button>
   <!-- Main Scripts-->
   <script src="assets/js/jquery.js"></script>

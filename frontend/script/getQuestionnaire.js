@@ -5,7 +5,12 @@ async function createRow(i,questionnaireTitle,questionnaireDescription,questionn
 	numCell.innerText = i;
 
 	let questionnaireTitleCell = document.createElement('td');
-	questionnaireTitleCell.innerText = questionnaireTitle;
+
+  textQuestionnaireTitle = document.createTextNode(questionnaireTitle);
+   
+  let logoEdit = document.createElement('img');
+  logoEdit.setAttribute('src','assets/img/editSupplier.png');
+  logoEdit.setAttribute('style','margin-left:1.5%;cursor:pointer');
 
 	let questionnaireDescriptionCell = document.createElement('td');
 	questionnaireDescriptionCell.innerText = questionnaireDescription;
@@ -25,8 +30,12 @@ async function createRow(i,questionnaireTitle,questionnaireDescription,questionn
 
 	detailCell.addEventListener('click', () => getDetails(questionnaireId,questionnaireTitle,questionnaireDescription));
 	//editCell.addEventListener('click', () => getUpdate(idKelas));
+  
+  logoEdit.addEventListener('click', () => getUpdate(questionnaireId,questionnaireTitle,questionnaireDescription));
 
-	
+  questionnaireTitleCell.appendChild(textQuestionnaireTitle);
+  questionnaireTitleCell.appendChild(logoEdit);
+  	
 	let row = document.createElement('tr');
 	row.appendChild(numCell);
 	row.appendChild(questionnaireTitleCell);
