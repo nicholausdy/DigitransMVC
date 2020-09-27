@@ -9,6 +9,7 @@ const QuestionnaireController = require('./controllers/QuestionnaireController')
 const config = require('../config/index');
 const QuestionController = require('./controllers/QuestionController');
 const AnswerController = require('./controllers/AnswerController');
+const ChartController = require('./controllers/ChartController');
 
 const app = express();
 const server = http.Server(app);
@@ -127,6 +128,15 @@ app.post('/private/getScores', async (req, res) => {
   try {
     const answerController = new AnswerController(req, res);
     await answerController.getScores();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
+app.post('/private/getChart', async (req, res) => {
+  try {
+    const chartController = new ChartController(req, res);
+    await chartController.readChart();
   } catch (error) {
     return res.status(500).json({ success: false, message: error.name, detail: error.message });
   }
