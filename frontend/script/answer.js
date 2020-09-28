@@ -32,11 +32,13 @@ async function createContainerText(description){
 
 	let container = document.createElement('div');
 	container.setAttribute('style','margin:3%');
+	container.setAttribute('class','boxItem');
 	container.appendChild(descriptionCell);
 	container.appendChild(answerCell);
 
 	let section = document.getElementById('listAnswers');
 	section.appendChild(container);
+	container.setAttribute('style','margin-bottom:5%');
 };
 
 async function createContainerRadio(description,point,length){
@@ -62,6 +64,9 @@ async function createContainerRadio(description,point,length){
 
 	container.appendChild(answerCell);
 
+	container.setAttribute('class','boxItem');
+
+	container.setAttribute('style','margin-bottom:5%');
 
 	let section = document.getElementById('listAnswers');
 	section.appendChild(container);
@@ -90,6 +95,10 @@ async function createContainerCheckbox(description,point,length){
 
 	container.appendChild(answerCell);
 
+	container.setAttribute('class','boxItem');
+
+	container.setAttribute('style','margin-bottom:5%');
+
 	let section = document.getElementById('listAnswers');
 	section.appendChild(container);
 };
@@ -107,8 +116,11 @@ async function createOptionsRadio(description,point){
 	label.innerHTML += description;
 	score = score + point;
 
+	linebreak = document.createElement("br");
+
 	let section = document.getElementById('listsOfRadioOptions'+[idCekRadio]);
 	section.appendChild(label);
+	section.appendChild(linebreak);
 }
 
 async function createOptionsCheckbox(description,point){
@@ -124,8 +136,11 @@ async function createOptionsCheckbox(description,point){
 	label.innerHTML += description;
 	score = score + point;
 
+	linebreak = document.createElement("br");
+
 	let section = document.getElementById('listsOfCheckboxOptions'+[idCekCheckbox]);
 	section.appendChild(label);
+	section.appendChild(linebreak);
 };
 
 async function answerQuestions(){
