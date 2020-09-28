@@ -48,4 +48,4 @@ async function createDivScore(no,email,score){
 
 	let table = document.getElementById('listOfScores');
 	table.appendChild(row);
-}
+};
