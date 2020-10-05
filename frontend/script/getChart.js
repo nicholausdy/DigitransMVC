@@ -54,7 +54,7 @@ async function loadQuestionnairesChart(){
   console.log(data);
   let i=1;
   for ( let item of data.message) {
-  	createRowChart(i,item.QuestionnaireTitle,item.QuestionnaireDescription);
+  	createRowChart(i,item.QuestionnaireTitle,item.QuestionnaireDescription,item.QuestionnaireId);
   	i++;
   }
 };
