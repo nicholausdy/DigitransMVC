@@ -5,7 +5,9 @@
 
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 
-  <title>Landing Page</title>
+  <title>Questionnaire</title>
+
+  <script src="script/getChart.js"></script>
 
 
   <link href='https://fonts.googleapis.com/css?family=Lato:400,300,400italic,700,900' rel='stylesheet' type='text/css'>
@@ -51,6 +53,10 @@
 	.navbar-default {
 	 margin : 0 !important; 
 	}
+	.table thead>tr>th {
+   		vertical-align: bottom;
+	   	border-bottom: 0px solid hsl(0, 0%, 87%);
+	}
 	</style>
 </head>
 
@@ -71,7 +77,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                   </button>
-               
+                <a class="navbar-brand" href="#"><b>Lists of Questionnaire</b></a>
               </div>
 
               <!-- Collect the nav links, forms, and other content for toggling -->
@@ -87,15 +93,52 @@
           </div>
     </div>
     <!-- Navs done -->
+   <table class="table table borderless">
+              <thead>
+                <tr>
+                  <th style="font-weight:bold">No</th>
+                  <th style="font-weight:bold">Title</th>
+                  <th style="font-weight:bold">Description</th>
+                  <th></th>
+                </tr>
+              </thead>
+   				<tbody id="questionnaireChart"></tbody>
+   	</table>
+  
+  <!-- Modal -->
+  <div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Update Questionnaire</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" style="margin-left:3%">
+          <p style="display:inline-block">questionnaire title</p>
+          <input id="editQuestionnaireTitle"></input>
+        </div>
+        <div class="row" style="margin-left:3%">
+          <p style="display:inline-block">questionnaire Description</p>
+          <input id="editQuestionnaireDescription"></input>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button onclick="updateQuestionnaire()" type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <div id="modalUpdateQuestionnaire" class="modal">
+    <div class="modal-content">
 
-   <div class="tampilanlogin">
-   <p>Main menu</p>
-	<a href="getQuestionnaire.html"><button class="btn btn-success" href="getQuestionnaire.html">See lists of Questionnaires</button></a>
-	<a href="questionnaire.html"><button class="btn btn-danger" href="questionnaire.html">Create Questionnaire</button></a>
-  <a href="getChart.html"><button class="btn btn-primary" href="getChart.html">See Chart</button></a>
-		<!-- Button -->
-	</div>
+    </div>
+  </div>
 
+  <a href="landingPage.html"><button class="btn btn-info">Back</button>
   <!-- Main Scripts-->
   <script src="assets/js/jquery.js"></script>
   <script src="assets/js/bootstrap.min.js"></script>
@@ -103,7 +146,7 @@
   <!-- Bootstrap 3 has typeahead optionally -->
   <script src="assets/js/typeahead.min.js"></script>
   <script>
-    
+    window.onload = loadQuestionnairesChart();
   </script>
 
 </body>
