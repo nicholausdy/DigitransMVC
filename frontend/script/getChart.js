@@ -71,9 +71,34 @@ async function getChart(){
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: JSON.stringify({
-      "questionnaire_id":localStorage.getItem('questionnaireId'),
+      "questionnaire_id":testing,
+        "question_id":1
     }),
   });
-  let result = await response.json();
-  console.log(result);
-}
+  let resulting = await response;
+  console.log(resulting);
+
+  let component = document.createElement("div");
+
+  let output = await response.text();
+
+  const objectURL = window.URL.createObjectURL(output);
+
+  component.appendChild(objectURL);
+
+  let graphAnswer = document.getElementById('graph');
+  graphAnswer.appendChild(component);
+};
+
+async function createChart(){
+  let component = document.createElement("div");
+
+
+
+  const objectURL = window.URL.createObjectURL(`${url}/private/getChart`);
+
+  component.appendChild(objectURL);
+
+  let graphAnswer = document.getElementById('graph');
+  graphAnswer.appendChild(component);
+};
