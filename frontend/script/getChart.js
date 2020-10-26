@@ -1,5 +1,7 @@
 var url = "http://206.189.153.47:2020";
 
+var svgNS = "http://www.w3.org/2000/svg";  
+
 async function createRowChart(i,questionnaireTitle,questionnaireDescription,questionnaireId){
 	let numCell = document.createElement('td');
 	numCell.innerText = i;
@@ -72,33 +74,89 @@ async function getChart(){
     },
     body: JSON.stringify({
       "questionnaire_id":testing,
-        "question_id":1
+        "question_id":2
     }),
   });
-  let resulting = await response;
-  console.log(resulting);
-
-  let component = document.createElement("div");
-
-  let output = await response.text();
-
-  const objectURL = window.URL.createObjectURL(output);
-
-  component.appendChild(objectURL);
-
-  let graphAnswer = document.getElementById('graph');
-  graphAnswer.appendChild(component);
+  console.log(response);
+  return response;
 };
 
 async function createChart(){
   let component = document.createElement("div");
 
-
-
-  const objectURL = window.URL.createObjectURL(`${url}/private/getChart`);
+  const objectURL = window.URL.createObjectURL("http://206.189.153.47:2020/private/getChart");
 
   component.appendChild(objectURL);
 
-  let graphAnswer = document.getElementById('graph');
+  let graphAnswer = document.getElementById('mySVG');
   graphAnswer.appendChild(component);
+};
+
+function createCircle()
+{
+    var myCircle = document.createElementNS(svgNS,"circle"); //to create a circle. for rectangle use "rectangle"
+    myCircle.setAttributeNS(null,"id","mycircle");
+    myCircle.setAttributeNS(null,"cx",100);
+    myCircle.setAttributeNS(null,"cy",100);
+    myCircle.setAttributeNS(null,"r",50);
+    myCircle.setAttributeNS(null,"fill","black");
+    myCircle.setAttributeNS(null,"stroke","none");
+
+    document.getElementById("mySVG").appendChild(myCircle);
+}; 
+
+async function createReadableStream(response) {
+    const body = response.body;
+    const reader = await body.getReader();
+
+    return new ReadableStream({
+        async start(controller) {
+            while (true) {
+                const { done, value} = await reader.read();
+
+                if (done) {
+                    break;
+                }
+                controller.enqueue(value);
+            }
+            controller.close();
+            reader.releaseLock();
+        }
+    })
+};
+
+async function createTempURL(response) {
+    try {
+        const stream = await createReadableStream(response);
+        console.log(stream);
+        let transformedResp =  new Response(stream);
+        transformedResp = await transformedResp.blob();
+        const url = URL.createObjectURL(transformedResp); 
+        console.log(url)
+        return url;
+    } catch (error) {
+        console.log(error)
+    }
+};
+
+async function chartURL() {
+    try {
+        const response = await getChart()
+        const url = await createTempURL(response)
+        console.log(url);
+        return url; 
+    } catch (error) {
+        console.log(error)
+    }
+};
+
+async function renderChart(){
+  const url = await chartURL();
+
+  let data = document.createElement('object');
+  data.setAttribute('type','image/svg+xml');
+  data.setAttribute('data',url);
+
+  let div = document.getElementById('graph');
+  div.appendChild(data);
 };
