@@ -1,4 +1,4 @@
-var url = "http://206.189.153.47:2020";
+var url = "http://206.189.153.47";
 
 async function getUpdate(id,title,description){
   exampleModalCenter.style.display = "block";

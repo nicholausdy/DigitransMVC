@@ -1,4 +1,4 @@
-var url = "http://206.189.153.47:2020";
+var url = "http://206.189.153.47";
 var questionsList = [];
 var idNomor = 0;
 var idOptions;
