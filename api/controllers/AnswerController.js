@@ -92,6 +92,40 @@ class AnswerController {
     }
   }
 
+  static async validateAnswerList(questionType, listOfAnswer, isRequired) {
+    if ((listOfAnswer.length === 0) && (isRequired)) {
+      throw new Error('Some required questions have not been answered');
+    }
+    if ((listOfAnswer.length > 1) && (questionType === 'radio')) {
+      throw new Error('Radio question type should only have 1 answer');
+    }
+  }
+
+  static async validateAnswerBody(body) {
+    try {
+      const questionList = await Questions.findAll({
+        attributes: ['isrequired', 'question_id'],
+        where: {
+          questionnaire_id: body.questionnaire_id,
+        },
+        order: [
+          ['question_id', 'ASC'],
+        ],
+      });
+      const answerPart = body.answers;
+      for (let i = 0; i < questionList.length; i++) {
+        if (questionList[i].isrequired) {
+          const found = answerPart.find(element => element.question_id === questionList[i].question_id)
+          if (typeof found === 'undefined') {
+            throw new Error('Missing answer part detected');
+          }
+        }
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   static async createListOfObjectToBeInserted(body) {
     const result = [];
     try {
@@ -103,7 +137,7 @@ class AnswerController {
         object.questionnaire_id = body.questionnaire_id;
         object.question_id = body.answers[i].question_id;
         const questionInfo = await Questions.findOne({
-          attributes: ['type'],
+          attributes: ['type','isrequired'],
           where: {
             [Op.and]: [
               { questionnaire_id: body.questionnaire_id },
@@ -111,6 +145,7 @@ class AnswerController {
             ],
           },
         });
+        await AnswerController.validateAnswerList(questionInfo.type, body.answers[i].answer, questionInfo.isrequired);
         if ((questionInfo.type === 'radio') || (questionInfo.type === 'checkbox')) {
           object.option_id = body.answers[i].answer;
         } else {
@@ -122,7 +157,7 @@ class AnswerController {
     } catch (error) {
       throw new Error(error.message);
     }
-  } 
+  }
 
   async answer() {
     try {
@@ -131,6 +166,7 @@ class AnswerController {
         return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
       }
       const { body } = this.req;
+      await AnswerController.validateAnswerBody(body);
       const listOfObjectToInsert = await AnswerController.createListOfObjectToBeInserted(body);
       await Answers.bulkCreate(listOfObjectToInsert);
       const answerPart = body.answers;
