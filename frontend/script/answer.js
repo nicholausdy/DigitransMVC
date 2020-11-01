@@ -218,7 +218,7 @@ async function answerQuestions(){
   let resps = await responses.json();
   console.log(resps);
   console.log(JSON.stringify({
-      "questionnaire_id": localStorage.getItem('questionnaireId'),
+      "questionnaire_id": localStorage.getItem('answererQuestionnaireId'),
       "answerer_name": localStorage.getItem('answererName'),
       "answerer_email": localStorage.getItem('answererEmail'),
       "answerer_company": localStorage.getItem('answererCompany'),

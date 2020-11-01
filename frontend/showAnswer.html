@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<script src="script/getAnswer.js"></script>
+<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/bootstrap.techie.css" rel="stylesheet">
+
+  <link href="assets/css/answer.css" rel="stylesheet">
+
+ <style>
+    body,
+    html {
+      overflow-x: hidden
+    }
+
+    body {
+      padding: 6px
+    }
+
+    footer {
+      border-top: 1px solid #ddd;
+      padding: 30px;
+      margin-top: 50px
+    }
+
+    .row>[class*=col-] {
+      margin-bottom: 65px
+    }
+
+    .col-sm-{
+      background: red;
+    }
+
+    .navbar-container {
+      position: relative;
+      min-height: 100px
+    }
+
+	.navbar-default {
+	 margin : 0 !important; 
+	}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+          <div class="card">
+            
+
+          </div>
+
+
+          	
+          <div class="tampilanlogin">
+		<table style="margin-bottom:2%" class="tablelogin">
+			<tr>
+				<td>Name : </td>
+				<td id="getAnswererName" style="font-weight:bold"></td>
+			</tr>
+			<tr>
+				<td>Company : </td>
+				<td id="getAnswererCompany" style="font-weight:bold"></td>
+		</table>
+
+    	 </div>
+     </div>
+
+<script>
+    window.onload = getAnswer();
+    window.onload = getAnswererDetails();
+</script>
+
+
+</body>
+</html>

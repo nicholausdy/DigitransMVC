@@ -30,7 +30,7 @@ async function createRow(i,questionnaireTitle,questionnaireDescription,questionn
   hapusCell.setAttribute('style','cursor:pointer');
 	hapusCell.innerHTML = `<span class="label label-danger pull-left">hapus</span>`
 
-	detailCell.addEventListener('click', () => getDetails(questionnaireId,questionnaireTitle,questionnaireDescription));
+	detailCell.addEventListener('click', () => getDetails(questionnaireId));
   scoreCell.addEventListener('click', () => getScore(questionnaireId));
 	//editCell.addEventListener('click', () => getUpdate(idKelas));
   
@@ -52,12 +52,19 @@ async function createRow(i,questionnaireTitle,questionnaireDescription,questionn
 	table.appendChild(row);
 }
 
-async function getDetails(questionnaireID,questionnaireTitle,questionnaireDescription){
-	window.localStorage.setItem('questionnaireId',questionnaireID);
-  window.localStorage.setItem('questionnaireTitle',questionnaireTitle);
-  window.localStorage.setItem('questionnaireDescription',questionnaireDescription);
-	let urlPart1 = window.location.href.split("/");
-    window.location = urlPart1.splice(0, urlPart1.length - 1).join("/") + "/landingPageAnswer.html";
+async function getDetails(questionnaireID){
+	window.localStorage.setItem('showQuestionnaireId',questionnaireID);
+  modalAnswererEmail.style.display = "block";
+
+};
+
+async function submitAnswererEmail(){
+  let emailElem = document.getElementById("showAnswererEmail");
+
+  window.localStorage.setItem('showAnswererEmail',emailElem.value);
+
+  let urlPart1 = window.location.href.split("/");
+    window.location = urlPart1.splice(0, urlPart1.length - 1).join("/") + "/showAnswer.html";
 }
 
 async function loadQuestionnaires(){
@@ -85,7 +92,7 @@ async function loadQuestionnaires(){
 };
 
 async function loadQuestions(){
-	let questionnaireId = localStorage.getItem('questionnaireId');
+	let questionnaireId = localStorage.getItem('answererQuestionnaireId');
 
 	let response = await fetch(`${url}/private/getQuestions`,{
     method: "POST", // *GET, POST, PUT, DELETE, etc.
