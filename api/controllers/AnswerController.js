@@ -4,6 +4,7 @@ const NATSPublisher = require('../services/publish.service');
 const AuthService = require('../services/auth.service');
 const { Answers } = require('../models/Answers');
 const { Questions } = require('../models/Questions');
+const { Options } = require('../models/Options');
 const { db } = require('../../config/database');
 const { Scores } = require('../models/Scores');
 
@@ -154,10 +155,10 @@ class AnswerController {
     }
   }
   
-  static async getQuestionType(questionnaireId, questionId) {
+  static async getQuestionInfo(questionnaireId, questionId) {
     try {
       const questionInfo = await Questions.findOne({
-        attributes: ['type'],
+        attributes: ['type', 'question_description'],
         where: {
           [Op.and]: [
             { questionnaire_id: questionnaireId },
@@ -165,7 +166,7 @@ class AnswerController {
           ],
         },
       });
-      return questionInfo.type;
+      return questionInfo;
     } catch (error) {
       throw new Error(error.message);
     }
@@ -187,20 +188,48 @@ class AnswerController {
     }
   }
 
-  static async answerPartFormatter(queryResult) {
+  static async pairAnswersAndOptionsInfo(questionnaireId, questionId, answerListForSingleQuestion) {
+    try {
+      const orStatement = [];
+      // create dynamic or query based on answers, which is list of option_id
+      for (let i = 0; i < answerListForSingleQuestion.length; i++) {
+        const optionIdStatement = {};
+        optionIdStatement.option_id = answerListForSingleQuestion[i];
+        orStatement.push(optionIdStatement);
+      }
+      const queryResult = await Options.findAll({
+        attributes: ['option_id', 'description', 'score'],
+        where: {
+          [Op.and]: [
+            { [Op.or]: orStatement },
+            { questionnaire_id: questionnaireId },
+            { question_id: questionId },
+          ],
+        },
+      });
+      return queryResult;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async answerPartFormatter(answersQueryResult) {
     try {
       const listofAnswer = [];
-      for ( let i = 0; i < queryResult.length; i++) {
+      for ( let i = 0; i < answersQueryResult.length; i++) {
         const answerObject = {};
-        answerObject.question_id = queryResult[i].question_id;
-        const questionType = await AnswerController.getQuestionType(
-          queryResult[i].questionnaire_id,
-          queryResult[i].question_id);
-        if (questionType === 'checkbox' || questionType === 'radio') {
-          answerObject.answer = queryResult[i].option_id;
+        answerObject.question_id = answersQueryResult[i].question_id;
+        const questionInfo = await AnswerController.getQuestionInfo(
+          answersQueryResult[i].questionnaire_id,
+          answersQueryResult[i].question_id);
+        answerObject.type = questionInfo.type;
+        answerObject.question_description = questionInfo.question_description
+        if (questionInfo.type === 'checkbox' || questionInfo.type === 'radio') {
+          answerObject.answer = await AnswerController.pairAnswersAndOptionsInfo(answersQueryResult[i].questionnaire_id, 
+            answersQueryResult[i].question_id, answersQueryResult[i].option_id)
         } else {
           const singleElementList = [];
-          singleElementList.push(queryResult[i].text_answer);
+          singleElementList.push(answersQueryResult[i].text_answer);
           answerObject.answer = singleElementList;
         }
         listofAnswer.push(answerObject);
