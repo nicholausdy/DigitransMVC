@@ -106,6 +106,15 @@ app.post('/public/getQuestionnaireById', async (req, res) => {
   }
 });
 
+app.delete('/private/deleteQuestionnaireById', async (req, res) => {
+  try {
+    const questionnaireController = new QuestionnaireController(req, res);
+    await questionnaireController.deleteQuestionnaireById();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
 app.post('/private/getQuestions', async (req, res) => {
   try {
     const questionController = new QuestionController(req, res);
