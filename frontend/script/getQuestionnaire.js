@@ -126,10 +126,12 @@ async function submitAnswererData(){
 	let nameElem = document.getElementById('answererName');
 	let emailElem = document.getElementById('answererEmail');
 	let companyElem = document.getElementById('answererCompany');
+  let idElem = document.getElementById('answererQuestionnaireId');
 
 	window.localStorage.setItem('answererName',nameElem.value);
 	window.localStorage.setItem('answererEmail',emailElem.value);
 	window.localStorage.setItem('answererCompany',companyElem.value);
+  window.localStorage.setItem('answererQuestionnaireId',idElem.value);
 
 	let urlPart1 = window.location.href.split("/");
     window.location =

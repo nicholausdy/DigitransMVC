@@ -208,7 +208,7 @@ async function answerQuestions(){
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: JSON.stringify({
-      "questionnaire_id": localStorage.getItem('questionnaireId'),
+      "questionnaire_id": localStorage.getItem('answererQuestionnaireId'),
       "answerer_name": localStorage.getItem('answererName'),
       "answerer_email": localStorage.getItem('answererEmail'),
       "answerer_company": localStorage.getItem('answererCompany'),
