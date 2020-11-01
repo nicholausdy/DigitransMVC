@@ -104,7 +104,7 @@ class AnswerController {
   static async validateAnswerBody(body) {
     try {
       const questionList = await Questions.findAll({
-        attributes: ['isrequired', 'question_id'],
+        attributes: ['question_id'],
         where: {
           questionnaire_id: body.questionnaire_id,
         },
@@ -114,11 +114,9 @@ class AnswerController {
       });
       const answerPart = body.answers;
       for (let i = 0; i < questionList.length; i++) {
-        if (questionList[i].isrequired) {
-          const found = answerPart.find(element => element.question_id === questionList[i].question_id)
-          if (typeof found === 'undefined') {
-            throw new Error('Missing answer part detected');
-          }
+        const found = answerPart.find(element => element.question_id === questionList[i].question_id);
+        if (typeof found === 'undefined') {
+          throw new Error('Missing answer part detected');
         }
       }
     } catch (error) {
@@ -171,7 +169,7 @@ class AnswerController {
       await Answers.bulkCreate(listOfObjectToInsert);
       const answerPart = body.answers;
       const asyncOp = [];
-      for ( let i = 0 ; i < answerPart.length; i++) {
+      for ( let i = 0; i < answerPart.length; i++) {
         const updateNumberChosenOp = AnswerController.updateNumberChosenFromAnswerObject(
           body.questionnaire_id,
           answerPart[i]
