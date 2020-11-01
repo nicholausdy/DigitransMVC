@@ -22,13 +22,16 @@ async function createRow(i,questionnaireTitle,questionnaireDescription,questionn
 	detailCell.setAttribute('style','cursor:pointer');
 	detailCell.innerHTML = `<span class="label label-info pull-left" >detail</span>`
 
-	let editCell = document.createElement('td');
-	editCell.innerHTML = `<span class="label label-info pull-left" >edit</span>`
+	let scoreCell = document.createElement('td');
+  scoreCell.setAttribute('style','cursor:pointer');
+	scoreCell.innerHTML = `<span class="label label-success pull-left" >score</span>`
 
 	let hapusCell = document.createElement('td');
+  hapusCell.setAttribute('style','cursor:pointer');
 	hapusCell.innerHTML = `<span class="label label-danger pull-left">hapus</span>`
 
-	detailCell.addEventListener('click', () => getDetails(questionnaireId,questionnaireTitle,questionnaireDescription));
+	detailCell.addEventListener('click', () => getDetails(questionnaireId));
+  scoreCell.addEventListener('click', () => getScore(questionnaireId));
 	//editCell.addEventListener('click', () => getUpdate(idKelas));
   
   logoEdit.addEventListener('click', () => getUpdate(questionnaireId,questionnaireTitle,questionnaireDescription));
@@ -42,19 +45,26 @@ async function createRow(i,questionnaireTitle,questionnaireDescription,questionn
 	row.appendChild(questionnaireDescriptionCell);
 	row.appendChild(questionnaireIdCell);
 	row.appendChild(detailCell);
-	row.appendChild(editCell);
+	row.appendChild(scoreCell);
 	row.appendChild(hapusCell);
 
 	let table = document.getElementById('listOfQuestionnaires');
 	table.appendChild(row);
 }
 
-async function getDetails(questionnaireID,questionnaireTitle,questionnaireDescription){
-	window.localStorage.setItem('questionnaireId',questionnaireID);
-  window.localStorage.setItem('questionnaireTitle',questionnaireTitle);
-  window.localStorage.setItem('questionnaireDescription',questionnaireDescription);
-	let urlPart1 = window.location.href.split("/");
-    window.location = urlPart1.splice(0, urlPart1.length - 1).join("/") + "/landingPageAnswer.html";
+async function getDetails(questionnaireID){
+	window.localStorage.setItem('showQuestionnaireId',questionnaireID);
+  modalAnswererEmail.style.display = "block";
+
+};
+
+async function submitAnswererEmail(){
+  let emailElem = document.getElementById("showAnswererEmail");
+
+  window.localStorage.setItem('showAnswererEmail',emailElem.value);
+
+  let urlPart1 = window.location.href.split("/");
+    window.location = urlPart1.splice(0, urlPart1.length - 1).join("/") + "/showAnswer.html";
 }
 
 async function loadQuestionnaires(){
@@ -82,7 +92,7 @@ async function loadQuestionnaires(){
 };
 
 async function loadQuestions(){
-	let questionnaireId = localStorage.getItem('questionnaireId');
+	let questionnaireId = localStorage.getItem('answererQuestionnaireId');
 
 	let response = await fetch(`${url}/private/getQuestions`,{
     method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -123,10 +133,12 @@ async function submitAnswererData(){
 	let nameElem = document.getElementById('answererName');
 	let emailElem = document.getElementById('answererEmail');
 	let companyElem = document.getElementById('answererCompany');
+  let idElem = document.getElementById('answererQuestionnaireId');
 
 	window.localStorage.setItem('answererName',nameElem.value);
 	window.localStorage.setItem('answererEmail',emailElem.value);
 	window.localStorage.setItem('answererCompany',companyElem.value);
+  window.localStorage.setItem('answererQuestionnaireId',idElem.value);
 
 	let urlPart1 = window.location.href.split("/");
     window.location =

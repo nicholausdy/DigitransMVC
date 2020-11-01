@@ -32,11 +32,13 @@ async function createContainerText(description){
 
 	let container = document.createElement('div');
 	container.setAttribute('style','margin:3%');
+	container.setAttribute('class','boxItem');
 	container.appendChild(descriptionCell);
 	container.appendChild(answerCell);
 
 	let section = document.getElementById('listAnswers');
 	section.appendChild(container);
+	container.setAttribute('style','margin-bottom:5%');
 };
 
 async function createContainerRadio(description,point,length){
@@ -62,6 +64,9 @@ async function createContainerRadio(description,point,length){
 
 	container.appendChild(answerCell);
 
+	container.setAttribute('class','boxItem');
+
+	container.setAttribute('style','margin-bottom:5%');
 
 	let section = document.getElementById('listAnswers');
 	section.appendChild(container);
@@ -90,6 +95,10 @@ async function createContainerCheckbox(description,point,length){
 
 	container.appendChild(answerCell);
 
+	container.setAttribute('class','boxItem');
+
+	container.setAttribute('style','margin-bottom:5%');
+
 	let section = document.getElementById('listAnswers');
 	section.appendChild(container);
 };
@@ -107,8 +116,11 @@ async function createOptionsRadio(description,point){
 	label.innerHTML += description;
 	score = score + point;
 
+	linebreak = document.createElement("br");
+
 	let section = document.getElementById('listsOfRadioOptions'+[idCekRadio]);
 	section.appendChild(label);
+	section.appendChild(linebreak);
 }
 
 async function createOptionsCheckbox(description,point){
@@ -124,8 +136,11 @@ async function createOptionsCheckbox(description,point){
 	label.innerHTML += description;
 	score = score + point;
 
+	linebreak = document.createElement("br");
+
 	let section = document.getElementById('listsOfCheckboxOptions'+[idCekCheckbox]);
 	section.appendChild(label);
+	section.appendChild(linebreak);
 };
 
 async function answerQuestions(){
@@ -193,7 +208,7 @@ async function answerQuestions(){
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: JSON.stringify({
-      "questionnaire_id": localStorage.getItem('questionnaireId'),
+      "questionnaire_id": localStorage.getItem('answererQuestionnaireId'),
       "answerer_name": localStorage.getItem('answererName'),
       "answerer_email": localStorage.getItem('answererEmail'),
       "answerer_company": localStorage.getItem('answererCompany'),
@@ -203,10 +218,12 @@ async function answerQuestions(){
   let resps = await responses.json();
   console.log(resps);
   console.log(JSON.stringify({
-      "questionnaire_id": localStorage.getItem('questionnaireId'),
+      "questionnaire_id": localStorage.getItem('answererQuestionnaireId'),
       "answerer_name": localStorage.getItem('answererName'),
       "answerer_email": localStorage.getItem('answererEmail'),
       "answerer_company": localStorage.getItem('answererCompany'),
       "answers":answerLists,
     }));
+   let urlPart1 = window.location.href.split("/");
+    window.location = urlPart1.splice(0, urlPart1.length - 1).join("/") + "/answer.html";
 }

@@ -7,9 +7,8 @@
 
   <title>Questionnaire</title>
 
-  <script src="script/getQuestionnaire.js"></script>
-  <script src="script/updateQuestionnaire.js"></script>
-  <script src="script/getScore.js"></script>
+  <script src="script/getChart.js"></script>
+
 
   <link href='https://fonts.googleapis.com/css?family=Lato:400,300,400italic,700,900' rel='stylesheet' type='text/css'>
 
@@ -100,13 +99,10 @@
                   <th style="font-weight:bold">No</th>
                   <th style="font-weight:bold">Title</th>
                   <th style="font-weight:bold">Description</th>
-                  <th style="font-weight:bold">Link</th>
-                  <th></th>
-                  <th></th>
                   <th></th>
                 </tr>
               </thead>
-   				<tbody id="listOfQuestionnaires"></tbody>
+   				<tbody id="questionnaireChart"></tbody>
    	</table>
   
   <!-- Modal -->
@@ -142,24 +138,24 @@
     </div>
   </div>
 
-  <div class="modal" id="modalAnswererEmail" tabindex="-1" role="dialog" aria-labelledby="modalGetQuestions" aria-hidden="true">
+
+ <div class="modal" id="modalGetQuestions" tabindex="-1" role="dialog" aria-labelledby="modalGetQuestions" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Enter your Email</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Which Questions Would you like to choose</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div class="row" style="margin-left:3%">
-          <p style="display:inline-block">Email</p>
-          <input id="showAnswererEmail"></input>
+        <div id="listQuestions" class="row" style="margin-left:3%">
+
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button onclick="submitAnswererEmail()" type="button" class="btn btn-primary">Next</button>
+        <button onclick="updateQuestionnaire()" type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
@@ -173,7 +169,7 @@
   <!-- Bootstrap 3 has typeahead optionally -->
   <script src="assets/js/typeahead.min.js"></script>
   <script>
-    window.onload = loadQuestionnaires();
+    window.onload = loadQuestionnairesChart();
   </script>
 
 </body>
