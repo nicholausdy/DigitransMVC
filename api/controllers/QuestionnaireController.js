@@ -98,9 +98,9 @@ class QuestionnaireController {
     }
   }
 
-  static async validateGetQuestionnaire(fieldName) {
+  async validateGetQuestionnaire(fieldName) {
     try {
-      if (Boolean(fieldName)) {
+      if (Boolean(this.req.body[fieldName])) {
         return true;
       }
       return false;
@@ -111,7 +111,7 @@ class QuestionnaireController {
 
   async getQuestionnaire() {
     try {
-      const isInputValid = await QuestionnaireController.validateGetQuestionnaire(this.req.body.email);
+      const isInputValid = await this.validateGetQuestionnaire('email');
       if (!(isInputValid)) {
         return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
       }
@@ -142,7 +142,7 @@ class QuestionnaireController {
 
   async getQuestionnaireById() {
     try {
-      const isInputValid = await QuestionnaireController.validateGetQuestionnaire(this.req.body.questionnaire_id);
+      const isInputValid = await this.validateGetQuestionnaire('questionnaire_id');
       if (!(isInputValid)) {
         return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
       }
