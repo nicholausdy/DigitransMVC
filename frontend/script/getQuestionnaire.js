@@ -1,4 +1,4 @@
-var url = "http://206.189.153.47:2020";
+var url = "http://206.189.153.47";
 
 async function createRow(i,questionnaireTitle,questionnaireDescription,questionnaireId){
 	let numCell = document.createElement('td');

@@ -1,5 +1,6 @@
 const AuthService = require('../services/auth.service');
 const { Questionnaire } = require('../models/Questionnaire');
+const { Scores } = require('../models/Scores');
 const HashService = require('../services/hash.service');
 
 class QuestionnaireController {
@@ -98,9 +99,9 @@ class QuestionnaireController {
     }
   }
 
-  async validateGetQuestionnaire() {
+  async validateGetQuestionnaire(fieldName) {
     try {
-      if (Boolean(this.req.body.email)) {
+      if (Boolean(this.req.body[fieldName])) {
         return true;
       }
       return false;
@@ -111,7 +112,7 @@ class QuestionnaireController {
 
   async getQuestionnaire() {
     try {
-      const isInputValid = await this.validateGetQuestionnaire();
+      const isInputValid = await this.validateGetQuestionnaire('email');
       if (!(isInputValid)) {
         return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
       }
@@ -131,6 +132,54 @@ class QuestionnaireController {
         },
       });
       return this.res.status(200).json({ success: true, message: result });
+    } catch (error) {
+      return this.res.status(500).json({
+        success: false,
+        message: error.name,
+        detail: error.message,
+      });
+    }
+  }
+
+  async getQuestionnaireById() {
+    try {
+      const isInputValid = await this.validateGetQuestionnaire('questionnaire_id');
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
+      }
+      const result = await Questionnaire.findByPk(this.req.body.questionnaire_id);
+      return this.res.status(200).json({ success: true, message: result });
+    } catch (error) {
+      return this.res.status(500).json({
+        success: false,
+        message: error.name,
+        detail: error.message,
+      });
+    }
+  }
+
+  async deleteQuestionnaireById() {
+    try {
+      const isInputValid = await this.validateGetQuestionnaire('questionnaire_id');
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
+      }
+      const tokenDecoded = await AuthService.tokenValidator(this.req);
+      if (!(tokenDecoded.success)) {
+        return this.res.status(403).json(tokenDecoded);
+      }
+      const deleteQuestionnaire = Questionnaire.destroy({
+        where: {
+          QuestionnaireId: this.req.body.questionnaire_id,
+        },
+      });
+      const deleteScores = Scores.destroy({
+        where: {
+          questionnaire_id: this.req.body.questionnaire_id,
+        },
+      });
+      await Promise.all([deleteQuestionnaire, deleteScores]);
+      return this.res.status(200).json({ success: true, message: 'Delete successful' });
     } catch (error) {
       return this.res.status(500).json({
         success: false,
