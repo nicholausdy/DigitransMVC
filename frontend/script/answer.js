@@ -8,12 +8,31 @@ var part = 0;
 var idOptions;
 var answerLists = [];
 
-async function isiDeskripsiQuestionnaire(){
+async function getQuestionnaireDetails(){
+  let response = await fetch(`${url}/public/getQuestionnaireById`,{
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    mode:"cors",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: JSON.stringify({
+      "questionnaire_id":localStorage.getItem("answererQuestionnaireId"),
+    }),
+  });
+  let data = await response.json();
+  console.log(data);
+  let item = data.message;
+  fillQuestionnaireDescription(item.QuestionnaireTitle,item.QuestionnaireDescription);
+};
+
+async function fillQuestionnaireDescription(title,description){
 	let titleElem = document.getElementById('getQuestionnaireTitle');
 	let descriptionElem = document.getElementById('getQuestionnaireDescription');
 
-	titleElem.innerText = localStorage.getItem('questionnaireTitle');
-	descriptionElem.innerText = localStorage.getItem('questionnaireDescription');
+	titleElem.innerText = title;
+	descriptionElem.innerText = description;
 }
 async function createContainerText(description){
 	idAnswer += 1;
