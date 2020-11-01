@@ -77,7 +77,7 @@ async function loadChartQuestions(){
   for(let i=0;i<item.length;i++){
     createRowQuestions(item[i].question_description,item[i].question_id);
   }
-}
+};
 
 async function loadQuestionnairesChart(){
 	let email = localStorage.getItem('email');
