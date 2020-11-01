@@ -155,7 +155,7 @@ async function answerQuestions(){
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: JSON.stringify({
-      "questionnaire_id":localStorage.getItem('questionnaireId'),
+      "questionnaire_id":localStorage.getItem('answererQuestionnaireId'),
     }),
    });
    let hasil = await data.json();
