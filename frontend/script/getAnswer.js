@@ -23,22 +23,32 @@ async function getAnswer(){
 
   let component = item.answers;
   for(let i=0;i<component.length;i++){
-  	createAnswerDetails(i);
+  	createAnswerDetails(i,component[i].question_description);
   }
 };
 
-async function createAnswerDetails(i){
+async function createAnswerDetails(num,description){
 	let numCell = document.createElement('td');
-	numCell.innerText = i;
+	numCell.innerText = num;
  
-	let answerCell = document.createElement('td');
+  let descriptionCell = document.createElement('td');	
+
+  let textDescription = document.createElement('p');
+
+  let descriptionText = document.createTextNode(description);
+  textDescription.appendChild(descriptionText);
+
+  descriptionCell.appendChild(textDescription);
+
+  let answerCell = document.createElement('td');
 	answerCell.setAttribute('style','cursor:pointer');
 	answerCell.innerHTML = `<span class="label label-info pull-left" >See Answers</span>`
 	
-	answerCell.addEventListener('click', () => getListAnswers(i));
+	answerCell.addEventListener('click', () => getListAnswers(num));
 
 	let row = document.createElement('tr');
 	row.appendChild(numCell);
+  row.appendChild(descriptionCell);
 	row.appendChild(answerCell);
 
 	let table = document.getElementById('listAnswers');
@@ -79,10 +89,23 @@ async function getListAnswers(i){
   console.log(data);
   let item = data.message;
   let component = item.answers;
-  for(let j=0;j<component[i].answer.length;j++){
-  	createListAnswers(component[i].answer[j]);
+  if((component[i].type==="radio")||(component[i].type==="checkbox")){
+    for(let j=0;j<component[i].answer.length;j++){
+      console.log(component[i].type);
+      fillQuestionsDescription(component[i].question_description);
+    	createListAnswers(component[i].answer[j].description);
+    }
   }
-}
+  else if(component[i].type==="text"){
+    for(let j=0;j<component[i].answer.length;j++){
+      console.log(i);
+      console.log(j);
+      fillQuestionsDescription(component[i].question_description);
+      createListAnswers(component[i].answer[j]);
+    }
+  }
+};
+
 
 async function getAnswererDetails(){
 	let nameElem = document.getElementById('getAnswererName');
@@ -90,4 +113,9 @@ async function getAnswererDetails(){
 
 	nameElem.innerText = localStorage.getItem('showAnswererName');
 	companyElem.innerText = localStorage.getItem('showAnswererCompany');
+};
+
+async function fillQuestionsDescription(description){
+  let titleElem = document.getElementById("showQuestionsTitle");
+  titleElem.innerText = description;
 }
