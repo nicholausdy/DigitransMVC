@@ -31,10 +31,52 @@ async function createRowChart(i,questionnaireTitle,questionnaireDescription,ques
 	table.appendChild(row);
 };
 
+async function createRowQuestions(questionDescription,questionId){
+  let questionCell = document.createElement('div');
+  questionCell.setAttribute("style","cursor:pointer");
+
+  let questionText = document.createElement('p');
+
+  let textQuestion = document.createTextNode(questionDescription);
+  questionText.appendChild(textQuestion);
+
+  questionCell.appendChild(questionText);
+  
+  let row = document.createElement('div');
+  row.appendChild(questionCell);
+  row.addEventListener('click', () => acquireDataQuestions(questionId));
+
+  let container = document.getElementById('listQuestions');
+  container.appendChild(row);
+}
+
 async function getDetailsChart(questionnaireID){
   window.localStorage.setItem('questionnaireId',questionnaireID);
-  let urlPart1 = window.location.href.split("/");
-  window.location = urlPart1.splice(0, urlPart1.length - 1).join("/") + "/chart.html";
+  loadChartQuestions();
+  modalGetQuestions.style.display="block";
+};
+
+async function loadChartQuestions(){
+  let questionnaireId = localStorage.getItem('questionnaireId');
+
+  let response = await fetch(`${url}/private/getQuestions`,{
+    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    mode:"cors",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: JSON.stringify({
+      "questionnaire_id":questionnaireId,
+    }),
+  });
+  let data = await response.json();
+  console.log(data);
+  let item = data.message.questions;
+  for(let i=0;i<item.length;i++){
+    createRowQuestions(item[i].question_description,item[i].question_id);
+  }
 }
 
 async function loadQuestionnairesChart(){
@@ -62,6 +104,8 @@ async function loadQuestionnairesChart(){
 };
 
 async function getChart(){
+  let tests = localStorage.getItem("question_id");
+  console.log(tests);
 	let testing = localStorage.getItem('questionnaireId');
 	console.log(testing);
 	let response = await fetch(`${url}/private/getChart`,{
@@ -74,7 +118,7 @@ async function getChart(){
     },
     body: JSON.stringify({
       "questionnaire_id":testing,
-        "question_id":2
+        "question_id":parseInt(tests)
     }),
   });
   console.log(response);
@@ -160,3 +204,9 @@ async function renderChart(){
   let div = document.getElementById('graph');
   div.appendChild(data);
 };
+
+async function acquireDataQuestions(questionsId){
+  window.localStorage.setItem("question_id",questionsId);
+  let urlPart1 = window.location.href.split("/");
+  window.location = urlPart1.splice(0, urlPart1.length - 1).join("/") + "/chart.html";
+}
