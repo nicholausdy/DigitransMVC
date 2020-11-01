@@ -1,5 +1,6 @@
 const AuthService = require('../services/auth.service');
 const { Questionnaire } = require('../models/Questionnaire');
+const { Scores } = require('../models/Scores');
 const HashService = require('../services/hash.service');
 const Scores = require('../models/Scores');
 
