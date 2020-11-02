@@ -17,6 +17,7 @@ const config = {
     password: process.env.EMAIL_PASS,
   },
   jwtPass: process.env.JWT_PASS,
+  loginURL: process.env.LOGIN_URL,
 };
 
 module.exports = config;
