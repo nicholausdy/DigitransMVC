@@ -121,6 +121,7 @@ async function getListAnswers(i){
   let item = data.message;
   let component = item.answers;
   if((component[i].type==="radio")||(component[i].type==="checkbox")){
+    fillTotalScore(component[i].score);
     for(let j=0;j<component[i].answer.length;j++){
       console.log(component[i].type);
       fillQuestionsDescription(component[i].question_description);
@@ -149,4 +150,10 @@ async function getAnswererDetails(){
 async function fillQuestionsDescription(description){
   let titleElem = document.getElementById("showQuestionsTitle");
   titleElem.innerText = description;
+};
+
+async function fillTotalScore(score){
+  let scoreElem = document.getElementById("totalScore");
+
+  scoreElem.innerText = score;
 }
