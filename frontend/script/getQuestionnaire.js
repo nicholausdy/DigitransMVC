@@ -143,4 +143,3 @@ async function submitAnswererData(){
     window.location =
     urlPart1.splice(0, urlPart1.length - 1).join("/") + "/answer.html";
 };
-

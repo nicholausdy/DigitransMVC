@@ -137,8 +137,16 @@ async function createDivQuestionsText(){
   questionCheckboxCell.setAttribute('onclick','createDivQuestionsCheckbox()');
   questionCheckboxCell.setAttribute('style','margin-right:3%');
 
+  let keteranganQuestion = document.createElement('p');
+  textKeteranganQuestion = document.createTextNode('Description');
+  keteranganQuestion.appendChild(textKeteranganQuestion);
+
   let questionDescription = document.createElement('input');
   questionDescription.setAttribute('id','question_description'+[idNomor]);
+
+  let keteranganType = document.createElement('p');
+  textKeteranganType = document.createTextNode('Type');
+  keteranganType.appendChild(textKeteranganType);
 
   let type = document.createElement('input');
   type.setAttribute('id','question_type'+[idNomor]);
@@ -146,6 +154,10 @@ async function createDivQuestionsText(){
   let isRequired = document.createElement('input');
   isRequired.setAttribute('id','question_isRequired'+[idNomor]);
 
+  keteranganQuestion.setAttribute('style','display:inline-block');
+  questionDescription.setAttribute('style','display:inline-block');
+
+  questionDescriptionCell.appendChild(keteranganQuestion);
   questionDescriptionCell.appendChild(questionDescription);
 
   typeCell.appendChild(type);
