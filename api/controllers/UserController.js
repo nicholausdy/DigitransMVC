@@ -76,7 +76,7 @@ class UserController {
           Email: decodedToken.email,
         },
       });
-      return this.res.sendFile(config.loginPage);
+      return this.res.redirect(config.loginURL);
     } catch (error) {
       return this.res.status(500).json({
         success: false,
