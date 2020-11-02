@@ -1,6 +1,8 @@
 var url = "http://206.189.153.47";
 var questionsList = [];
 var idNomor = 0;
+let idOptionsList = []; //list of max option id for each question
+let idOptionsListIterator = 0;
 var idOptions;
 var idCek = 0;
 var idCheck = 0;
@@ -31,7 +33,7 @@ async function createQuestions(){
 
   let idNo = localStorage.getItem('idNumber');
   console.log(idNo);
-  
+  let iteratorToAccessOptionList = 0;
   for(let i=1;i<=idNo;i++){
     let radioList = [];
     let checkboxList = []
@@ -56,9 +58,10 @@ async function createQuestions(){
         isrequired: isRequiredElem.value,
         options: radioList,
       }
-      for(let j=1;j<=idOptions;j++){
-        let optionDescriptionElem = document.getElementById('description'+[j]);
-        let optionScoreElem = document.getElementById('score'+[j]);
+      iteratorToAccessOptionList += 1;
+      for(let j=1;j<=idOptionsList[iteratorToAccessOptionList];j++){
+        let optionDescriptionElem = document.getElementById('description'+[i]+[j]);
+        let optionScoreElem = document.getElementById('score'+[i]+[j]);
         const listsOfRadio = {
           "description":optionDescriptionElem.value,
           "score":parseInt(optionScoreElem.value),
@@ -74,9 +77,10 @@ async function createQuestions(){
         isrequired: isRequiredElem.value,
         options: checkboxList,
       }
-      for(let j=1;j<=idOptions;j++){
-        let optionDescriptionElem = document.getElementById('descriptionCheckbox'+[j]);
-        let optionScoreElem = document.getElementById('scoreCheckbox'+[j]);
+      iteratorToAccessOptionList += 1;
+      for(let j=1;j<=idOptionsList[iteratorToAccessOptionList];j++){
+        let optionDescriptionElem = document.getElementById('descriptionCheckbox'+[i]+[j]);
+        let optionScoreElem = document.getElementById('scoreCheckbox'+[i]+[j]);
         const listsOfCheckbox = {
           "description":optionDescriptionElem.value,
           "score":parseInt(optionScoreElem.value),
@@ -86,6 +90,7 @@ async function createQuestions(){
       questionsList.push(daftarPertanyaanCheckbox);
     }
   };
+  console.log(idOptionsList)
   console.log(questionsList);
   console.log(JSON.stringify(questionsList));
   let questionnaireId = localStorage.getItem('questionnaireID');
@@ -108,6 +113,7 @@ async function createQuestions(){
 
 async function createDivQuestions(){
   idNomor = idNomor + 1;
+  
 }
 
 async function createDivQuestionsText(){
@@ -137,16 +143,8 @@ async function createDivQuestionsText(){
   questionCheckboxCell.setAttribute('onclick','createDivQuestionsCheckbox()');
   questionCheckboxCell.setAttribute('style','margin-right:3%');
 
-  let keteranganQuestion = document.createElement('p');
-  textKeteranganQuestion = document.createTextNode('Description');
-  keteranganQuestion.appendChild(textKeteranganQuestion);
-
   let questionDescription = document.createElement('input');
   questionDescription.setAttribute('id','question_description'+[idNomor]);
-
-  let keteranganType = document.createElement('p');
-  textKeteranganType = document.createTextNode('Type');
-  keteranganType.appendChild(textKeteranganType);
 
   let type = document.createElement('input');
   type.setAttribute('id','question_type'+[idNomor]);
@@ -154,10 +152,6 @@ async function createDivQuestionsText(){
   let isRequired = document.createElement('input');
   isRequired.setAttribute('id','question_isRequired'+[idNomor]);
 
-  keteranganQuestion.setAttribute('style','display:inline-block');
-  questionDescription.setAttribute('style','display:inline-block');
-
-  questionDescriptionCell.appendChild(keteranganQuestion);
   questionDescriptionCell.appendChild(questionDescription);
 
   typeCell.appendChild(type);
@@ -185,6 +179,8 @@ async function createDivQuestionsRadio(){
   window.localStorage.setItem('idChecks',idCheck);
 
   createDivQuestions();
+
+  idOptionsListIterator += 1;
 
   let questionDescriptionCell = document.createElement('div');
 
@@ -259,6 +255,7 @@ async function createDivQuestionsCheckbox(){
   window.localStorage.setItem('idChecking',idCek);
 
   createDivQuestions();
+  idOptionsListIterator += 1;
 
   let questionDescriptionCell = document.createElement('div');
 
@@ -329,6 +326,7 @@ async function createDivQuestionsCheckbox(){
 
 async function addOptionsRadio(){
   idOptions = idOptions + 1;
+  idOptionsList[idOptionsListIterator] = idOptions;
 
   let idMengecek = localStorage.getItem('idChecks');
 
@@ -340,10 +338,10 @@ async function addOptionsRadio(){
   let optionScoreCell = document.createElement('div');
 
   description = document.createElement('input');
-  description.setAttribute('id','description'+[idOptions]);
+  description.setAttribute('id','description'+[idNomor]+[idOptions]);
 
   score = document.createElement('input');
-  score.setAttribute('id','score'+[idOptions]);
+  score.setAttribute('id','score'+[idNomor]+[idOptions]);
 
   optionDescriptionCell.appendChild(description);
   optionScoreCell.appendChild(score);
@@ -358,7 +356,7 @@ async function addOptionsRadio(){
 
 async function addOptionsCheckbox(){
   idOptions = idOptions + 1;
-  
+  idOptionsList[idOptionsListIterator] = idOptions;
   let idMengecek = localStorage.getItem('idChecking');
 
   let listOptions = document.createElement('div');
@@ -369,10 +367,10 @@ async function addOptionsCheckbox(){
   let optionScoreCell = document.createElement('div');
 
   description = document.createElement('input');
-  description.setAttribute('id','descriptionCheckbox'+[idOptions]);
+  description.setAttribute('id','descriptionCheckbox'+[idNomor]+[idOptions]);
 
   score = document.createElement('input');
-  score.setAttribute('id','scoreCheckbox'+[idOptions]);
+  score.setAttribute('id','scoreCheckbox'+[idNomor]+[idOptions]);
 
   optionDescriptionCell.appendChild(description);
   optionScoreCell.appendChild(score);
