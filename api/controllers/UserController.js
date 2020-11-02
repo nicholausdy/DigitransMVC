@@ -1,4 +1,5 @@
 const { User } = require('../models/User');
+const config = require('../../config/index');
 const HashService = require('../services/hash.service');
 const TokenService = require('../services/token.service');
 const NATSPublisher = require('../services/publish.service');
@@ -75,7 +76,7 @@ class UserController {
           Email: decodedToken.email,
         },
       });
-      return this.res.status(200).json({ success: true, message: 'Account has been verified' });
+      return this.res.sendFile(config.loginPage);
     } catch (error) {
       return this.res.status(500).json({
         success: false,
