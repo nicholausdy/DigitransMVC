@@ -163,8 +163,7 @@ async function createOptionsCheckbox(description,point){
 };
 
 async function answerQuestions(){
-	let answersRadio =[];
-	let answersCheckbox =[];
+
 	let data = await fetch(`${url}/private/getQuestions`,{
     method: "POST", // *GET, POST, PUT, DELETE, etc.
     mode:"cors",
@@ -181,7 +180,8 @@ async function answerQuestions(){
    console.log(hasil);
    let result = hasil.message.questions;
    for(let i=0;i<result.length;i++){
-
+   	let answersRadio =[];
+	let answersCheckbox =[];
    	if(result[i].type === "text"){
    	let hasilText = document.getElementById('text'+[i+1]);
    		const answers = {
