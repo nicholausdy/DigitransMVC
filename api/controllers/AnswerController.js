@@ -247,6 +247,19 @@ class AnswerController {
     }
   }
 
+  static async calculateScorePerQuestionOnSingleAnswer(listOfOptionInfo) {
+    // static method to calculate total score per question on a single answer
+    try {
+      let score = 0;
+      for (let i = 0; i < listOfOptionInfo.length; i++) {
+        score += listOfOptionInfo[i].score;
+      }
+      return score;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   static async answerPartFormatter(answersQueryResult) {
     try {
       const listofAnswer = [];
@@ -260,7 +273,8 @@ class AnswerController {
         answerObject.question_description = questionInfo.question_description
         if (questionInfo.type === 'checkbox' || questionInfo.type === 'radio') {
           answerObject.answer = await AnswerController.pairAnswersAndOptionsInfo(answersQueryResult[i].questionnaire_id, 
-            answersQueryResult[i].question_id, answersQueryResult[i].option_id)
+            answersQueryResult[i].question_id, answersQueryResult[i].option_id);
+          answerObject.score = await AnswerController.calculateScorePerQuestionOnSingleAnswer(answerObject.answer);
         } else {
           const singleElementList = [];
           singleElementList.push(answersQueryResult[i].text_answer);
