@@ -20,6 +20,7 @@ async function getAnswer(){
   let item = data.message;
   window.localStorage.setItem('showAnswererName',item.answerer_name);
   window.localStorage.setItem('showAnswererCompany',item.answerer_company);
+  getAnswererDetails();
 
   let component = item.answers;
   for(let i=0;i<component.length;i++){
