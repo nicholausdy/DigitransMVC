@@ -20,19 +20,19 @@ async function createRow(i,questionnaireTitle,questionnaireDescription,questionn
 
 	let detailCell = document.createElement('td');
 	detailCell.setAttribute('style','cursor:pointer');
-	detailCell.innerHTML = `<span class="label label-info pull-left" >detail</span>`
+	detailCell.innerHTML = `<span class="label label-info pull-left" >Detail</span>`
 
 	let scoreCell = document.createElement('td');
   scoreCell.setAttribute('style','cursor:pointer');
-	scoreCell.innerHTML = `<span class="label label-success pull-left" >score</span>`
+	scoreCell.innerHTML = `<span class="label label-success pull-left" >Score</span>`
 
-	let hapusCell = document.createElement('td');
-  hapusCell.setAttribute('style','cursor:pointer');
-	hapusCell.innerHTML = `<span class="label label-danger pull-left">hapus</span>`
+	let deleteCell = document.createElement('td');
+  deleteCell.setAttribute('style','cursor:pointer');
+	deleteCell.innerHTML = `<span class="label label-danger pull-left">Delete</span>`
 
 	detailCell.addEventListener('click', () => getDetails(questionnaireId));
   scoreCell.addEventListener('click', () => getScore(questionnaireId));
-	//editCell.addEventListener('click', () => getUpdate(idKelas));
+	deleteCell.addEventListener('click', () => deleteQuestionnaire(questionnaireId));
   
   logoEdit.addEventListener('click', () => getUpdate(questionnaireId,questionnaireTitle,questionnaireDescription));
 
@@ -46,7 +46,7 @@ async function createRow(i,questionnaireTitle,questionnaireDescription,questionn
 	row.appendChild(questionnaireIdCell);
 	row.appendChild(detailCell);
 	row.appendChild(scoreCell);
-	row.appendChild(hapusCell);
+	row.appendChild(deleteCell);
 
 	let table = document.getElementById('listOfQuestionnaires');
 	table.appendChild(row);
@@ -55,7 +55,6 @@ async function createRow(i,questionnaireTitle,questionnaireDescription,questionn
 async function getDetails(questionnaireID){
 	window.localStorage.setItem('showQuestionnaireId',questionnaireID);
   modalAnswererEmail.style.display = "block";
-
 };
 
 async function submitAnswererEmail(){
