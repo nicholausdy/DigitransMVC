@@ -55,7 +55,35 @@ async function createAnswerDetails(num,description){
 	table.appendChild(row);
 };
 
-async function createListAnswers(answers){
+async function createListAnswersRadio(answers,score){
+  let answerCell = document.createElement('div');
+  answerCell.setAttribute('style','display:inline-block;width:50%');
+
+  let scoreCell = document.createElement('div');
+  scoreCell.setAttribute('style','display:inline-block');
+
+  let answerText = document.createElement('p');
+
+  let answerScore = document.createElement('p');
+
+  let textAnswer = document.createTextNode(answers);
+  answerText.appendChild(textAnswer);
+
+  let textScore = document.createTextNode(score);
+  answerScore.appendChild(textScore);
+
+  answerCell.appendChild(answerText);
+  scoreCell.appendChild(answerScore);
+
+  let row = document.createElement('div');
+  row.appendChild(answerCell);
+  row.appendChild(scoreCell);
+
+  let container = document.getElementById('showListOfAnswers');
+  container.appendChild(row);
+};
+
+async function createListAnswersText(answers){
   let answerCell = document.createElement('div');
 
   let answerText = document.createElement('p');
@@ -65,9 +93,12 @@ async function createListAnswers(answers){
 
   answerCell.appendChild(answerText);
 
+  let row = document.createElement('div');
+  row.appendChild(answerCell);
+
   let container = document.getElementById('showListOfAnswers');
-  container.appendChild(answerCell);
-}
+  container.appendChild(row);
+};
 
 async function getListAnswers(i){
 	modalListAnswers.style.display = "block";
@@ -90,10 +121,11 @@ async function getListAnswers(i){
   let item = data.message;
   let component = item.answers;
   if((component[i].type==="radio")||(component[i].type==="checkbox")){
+    fillTotalScore(component[i].score);
     for(let j=0;j<component[i].answer.length;j++){
       console.log(component[i].type);
       fillQuestionsDescription(component[i].question_description);
-    	createListAnswers(component[i].answer[j].description);
+    	createListAnswersRadio(component[i].answer[j].description,component[i].answer[j].score);
     }
   }
   else if(component[i].type==="text"){
@@ -101,7 +133,7 @@ async function getListAnswers(i){
       console.log(i);
       console.log(j);
       fillQuestionsDescription(component[i].question_description);
-      createListAnswers(component[i].answer[j]);
+      createListAnswersText(component[i].answer[j]);
     }
   }
 };
@@ -118,4 +150,10 @@ async function getAnswererDetails(){
 async function fillQuestionsDescription(description){
   let titleElem = document.getElementById("showQuestionsTitle");
   titleElem.innerText = description;
+};
+
+async function fillTotalScore(score){
+  let scoreElem = document.getElementById("totalScore");
+
+  scoreElem.innerText = score;
 }
