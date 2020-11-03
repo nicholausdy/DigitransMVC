@@ -210,16 +210,12 @@ class QuestionController {
 
   async getQuestions() {
     try {
-      const tokenDecoded = await AuthService.tokenValidator(this.req);
-      if (!(tokenDecoded.success)) {
-        return this.res.status(403).json(tokenDecoded);
-      }
       const isInputValid = await this.validateGetQuestionInput();
       if (!(isInputValid)) {
         return this.res.status(400).json({ success: false, message: 'Missing fields detected'});
       }
-      const listOfQuestions = await QuestionController.getQuestionsByQuestionnaireId( 
-        this.req.body.questionnaire_id 
+      const listOfQuestions = await QuestionController.getQuestionsByQuestionnaireId(
+        this.req.body.questionnaire_id
       );
       if (typeof listOfQuestions[0] === 'undefined') {
         return this.res.status(200).json({ success: true, message: listOfQuestions });
