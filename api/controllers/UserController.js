@@ -2,13 +2,7 @@ const { User } = require('../models/User');
 const config = require('../../config/index');
 const HashService = require('../services/hash.service');
 const TokenService = require('../services/token.service');
-const NATSPublisher = require('../services/publish.service');
-
-const publisher = new NATSPublisher();
-
-(async () => {
-  await publisher.connect();
-})();
+const { publisher } = require('../services/publish.service');
 
 class UserController {
   constructor(req, res) {

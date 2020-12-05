@@ -1,18 +1,12 @@
 const { Op } = require('sequelize');
 const { QueryTypes } = require('sequelize');
-const NATSPublisher = require('../services/publish.service');
+const { publisher } = require('../services/publish.service');
 const AuthService = require('../services/auth.service');
 const { Answers } = require('../models/Answers');
 const { Questions } = require('../models/Questions');
 const { Options } = require('../models/Options');
 const { db } = require('../../config/database');
 const { Scores } = require('../models/Scores');
-
-const publisher = new NATSPublisher();
-
-(async () => {
-  await publisher.connect();
-})();
 
 class AnswerController {
   constructor(req, res) {

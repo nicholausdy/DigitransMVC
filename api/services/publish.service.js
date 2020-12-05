@@ -4,14 +4,13 @@ const NATSConnection = require('../../config/nats');
 class NATSPublisher {
   constructor() {
     this.nc = null;
-  }
-
-  async connect() {
-    try {
-      this.nc = await NATSConnection.connect();
-    } catch (error) {
-      throw new Error(error.message);
-    }
+    (async () => {
+      try {
+        this.nc = await NATSConnection.connect();
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    })();
   }
 
   async publish(topic, data) {
@@ -46,4 +45,6 @@ class NATSPublisher {
   }
 }
 
-module.exports = NATSPublisher;
+const publisher = new NATSPublisher();
+
+module.exports = { publisher };

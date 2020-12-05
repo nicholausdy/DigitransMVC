@@ -1,11 +1,5 @@
-const NATSPublisher = require('../services/publish.service');
+const { publisher } = require('../services/publish.service');
 const AuthService = require('../services/auth.service');
-
-const publisher = new NATSPublisher();
-
-(async () => {
-  await publisher.connect();
-})();
 
 class ChartController {
   constructor(req, res) {
