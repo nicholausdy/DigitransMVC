@@ -2,6 +2,7 @@ const { QueryTypes } = require('sequelize');
 const AuthService = require('../services/auth.service');
 const { Questions } = require('../models/Questions');
 const { Options } = require('../models/Options');
+const { OptionsToQuestionsMap } = require('../models/OptionsToQuestionsMap');
 const { db } = require('../../config/database');
 
 class QuestionController {
@@ -31,7 +32,7 @@ class QuestionController {
   static async getListOfOptions(questionnaireId, questionId, optionPart) {
     try {
       const result = [];
-      for ( let i = 0; i < optionPart.length; i++ ) {
+      for (let i = 0; i < optionPart.length; i++) {
         const optionObject = {};
         optionObject.questionnaire_id = questionnaireId;
         optionObject.question_id = questionId;
@@ -133,7 +134,7 @@ class QuestionController {
       const optionsToBeInserted = await QuestionController.parallelGetListOfOptions(
         body.questionnaire_id, questionPart)
       await QuestionController.parallelOptionsInsert(optionsToBeInserted, Options, isUpsert);
-      return this.res.status(200).json({ success: true, message: 'Questions saved'});
+      return this.res.status(200).json({ success: true, message: 'Questions saved' });
     } catch (error) {
       return this.res.status(500).json({
         success: false,
@@ -182,7 +183,7 @@ class QuestionController {
     }
   }
 
-  static async listOfAllOptions (questionnaireId, listOfQuestions) {
+  static async listOfAllOptions(questionnaireId, listOfQuestions) {
     try {
       const asyncOp = [];
       for (let i = 0 ; i < listOfQuestions.length; i++) {
@@ -236,6 +237,59 @@ class QuestionController {
       };
 
       return this.res.status(200).json({ success: true, message: result });
+    } catch (error) {
+      return this.res.status(500).json({
+        success: false,
+        message: error.name,
+        detail: error.message,
+      });
+    }
+  }
+
+  static async flattenOptionsToQuestionsMapObject(reqObject) {
+    try {
+      const reqList = [];
+      for (let i = 0; i < reqObject.mappings.length; i++) {
+        const flattenedReqObject = {};
+        flattenedReqObject.question_id = reqObject.mappings[i].question_id;
+        flattenedReqObject.option_id = reqObject.mappings[i].option_id;
+        flattenedReqObject.question_id_dest = reqObject.mappings[i].question_id_dest;
+        flattenedReqObject.questionnaire_id = reqObject.questionnaire_id;
+        flattenedReqObject.questionnaire_id_dest = reqObject.questionnaire_id;
+        reqList.push(flattenedReqObject);
+      }
+      return reqList;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async validateInsertOptionsToQuestionsMap() {
+    try {
+      if (Boolean(this.req.body.questionnaire_id) && Boolean(this.req.body.mappings)) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async insertOptionsToQuestionsMap() {
+    try {
+      const tokenDecoded = await AuthService.tokenValidator(this.req);
+      if (!(tokenDecoded.success)) {
+        return this.res.status(403).json(tokenDecoded);
+      }
+      const isInputValid = await this.validateInsertOptionsToQuestionsMap();
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
+      }
+      const listofMappings = await QuestionController.flattenOptionsToQuestionsMapObject(
+        this.req.body
+      );
+      await OptionsToQuestionsMap.bulkCreate(listofMappings);
+      return this.res.status(200).json({ success: true, message: 'Questions and mappings saved' });
     } catch (error) {
       return this.res.status(500).json({
         success: false,

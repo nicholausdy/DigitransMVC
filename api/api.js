@@ -79,6 +79,15 @@ app.post('/private/questions', async (req, res) => {
   }
 });
 
+app.post('/private/optionstoquestionsmap', async (req, res) => {
+  try {
+    const questionController = new QuestionController(req, res);
+    await questionController.insertOptionsToQuestionsMap();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
 app.put('/private/questions', async (req, res) => {
   try {
     const questionController = new QuestionController(req, res);
