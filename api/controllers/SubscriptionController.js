@@ -41,6 +41,34 @@ class SubscriptionController {
       });
     }
   }
+
+  async deleteSubscription() {
+    try {
+      const isInputValid = await this.validateSubscriptionInput();
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
+      }
+      const tokenDecoded = await AuthService.tokenValidator(this.req);
+      if (!(tokenDecoded.success)) {
+        return this.res.status(403).json(tokenDecoded);
+      }
+      if (tokenDecoded.message.email !== this.req.body.email) {
+        return this.res.status(404).json({ success: false, message: 'Invalid token for current user' });
+      }
+      await Subscription.destroy({
+        where: {
+          email: this.req.body.email,
+        },
+      });
+      return this.res.status(200).json({ success: true, message: 'Unsubscribed' });
+    } catch (error) {
+      return this.res.status(500).json({
+        success: false,
+        message: error.name,
+        detail: error.message,
+      });
+    }
+  }
 }
 
 module.exports = SubscriptionController;
