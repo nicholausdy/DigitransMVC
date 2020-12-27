@@ -71,6 +71,15 @@ app.delete('/private/user/subscription', async(req, res) => {
   }
 });
 
+app.post('/private/user/subscription', async(req, res) => {
+  try {
+    const subscriptionController = new SubscriptionController(req, res);
+    await subscriptionController.getSubscription();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
 app.post('/private/questionnaire', async (req, res) => {
   try {
     const questionnaireController = new QuestionnaireController(req, res)
