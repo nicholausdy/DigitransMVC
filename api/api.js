@@ -5,6 +5,7 @@ const http = require('http');
 const cors = require('cors');
 
 const UserController = require('./controllers/UserController');
+const SubscriptionController = require('./controllers/SubscriptionController');
 const QuestionnaireController = require('./controllers/QuestionnaireController');
 const config = require('../config/index');
 const QuestionController = require('./controllers/QuestionController');
@@ -47,6 +48,15 @@ app.post('/public/user/login', async(req, res) => {
   try {
     const userController = new UserController(req, res);
     await userController.login();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
+app.post('/private/user/subscription', async(req, res) => {
+  try {
+    const subscriptionController = new SubscriptionController(req, res);
+    await subscriptionController.createSubscription();
   } catch (error) {
     return res.status(500).json({ success: false, message: error.name, detail: error.message });
   }
