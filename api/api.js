@@ -71,7 +71,7 @@ app.delete('/private/user/subscription', async(req, res) => {
   }
 });
 
-app.post('/private/user/subscription', async(req, res) => {
+app.post('/private/user/getSubscription', async(req, res) => {
   try {
     const subscriptionController = new SubscriptionController(req, res);
     await subscriptionController.getSubscription();
