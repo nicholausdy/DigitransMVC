@@ -6,12 +6,12 @@ class DeletionNotifier {
   static async parallelSender(emailList, type) {
     try {
       const asyncOpList = [];
-        for (let i = 0; i < emailList.length; i++) {
-          const asyncOp = publisher.publish('mailCall', { email: emailList[i].email, type, token: '' });
-          asyncOpList.push(asyncOp);
-        }
+      for (let i = 0; i < emailList.length; i++) {
+        const asyncOp = publisher.publish('mailCall', { email: emailList[i].email, type, token: '' });
+        asyncOpList.push(asyncOp);
+      }
       const result = await Promise.allSettled(asyncOpList);
-      return result
+      return result;
     } catch (error) {
       throw new Error(error.message);
     }
@@ -45,7 +45,7 @@ class DeletionNotifier {
           on users.email = questionnaire.email 
         where subscription.email is NULL 
           AND questionnaire_id is not NULL
-          AND created_at <= now() - interval'50 mins')` //change to interval'7 days'
+          AND created_at <= now() - interval'50 mins')` // change to interval'7 days'
       const deleteQueryOp = db.query(deleteQueryString, {
         type: QueryTypes.DELETE,
       });
