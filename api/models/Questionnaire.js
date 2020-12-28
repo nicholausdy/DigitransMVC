@@ -25,6 +25,12 @@ const Questionnaire = db.define('Questionnaire', {
     primaryKey: true,
     field: 'questionnaire_id',
   },
+  CreatedAt: {
+    type: Sequelize.DATE,
+    allowNull: true,
+    defaultValue: Sequelize.NOW,
+    field: 'created_at',
+  },
 }, { tableName: 'questionnaire', timestamps: false });
 
 module.exports = {
