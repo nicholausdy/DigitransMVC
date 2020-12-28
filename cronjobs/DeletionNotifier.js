@@ -38,6 +38,13 @@ class DeletionNotifier {
 
   static async deletionNotifier() {
     try {
+      const emailQueryString = `select distinct users.email from users left join subscription 
+      on users.email = subscription.email
+        left join questionnaire 
+      on users.email = questionnaire.email 
+        where subscription.email is NULL 
+      AND questionnaire_id is not NULL
+        AND created_at <= now() - interval'20 mins'`; // change to interval'7 days'
       const deleteQueryString = `delete from questionnaire where questionnaire_id in (
         select questionnaire_id from users left join subscription 
           on users.email = subscription.email
@@ -46,21 +53,12 @@ class DeletionNotifier {
         where subscription.email is NULL 
           AND questionnaire_id is not NULL
           AND created_at <= now() - interval'20 mins')`; // change to interval'7 days'
-      const deleteQueryOp = db.query(deleteQueryString, {
-        type: QueryTypes.DELETE,
-      });
-      const emailQueryString = `select distinct users.email from users left join subscription 
-      on users.email = subscription.email
-        left join questionnaire 
-      on users.email = questionnaire.email 
-        where subscription.email is NULL 
-      AND questionnaire_id is not NULL
-        AND created_at <= now() - interval'20 mins'`; // change to interval'7 days'
-      const emailQueryOp = db.query(emailQueryString, {
+      const emailQueryResult = await db.query(emailQueryString, {
         type: QueryTypes.SELECT,
       });
-      const [deleteQueryResult, emailQueryResult] = await Promise.all([
-        deleteQueryOp, emailQueryOp]);
+      const deleteQueryResult = await db.query(deleteQueryString, {
+        type: QueryTypes.DELETE,
+      });
       const sendResult = await DeletionNotifier.parallelSender(emailQueryResult, 'deletionNotification');
       console.log(sendResult);
     } catch (error) {
