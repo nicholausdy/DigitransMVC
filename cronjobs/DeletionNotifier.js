@@ -25,7 +25,7 @@ class DeletionNotifier {
       on users.email = questionnaire.email 
         where subscription.email is NULL 
       AND questionnaire_id is not NULL
-        AND created_at <= now() - interval'15 mins'`; // change to interval'5 days'
+        AND created_at <= now() - interval'4 mins'`; // change to interval'5 days'
       const queryResult = await db.query(queryString, {
         type: QueryTypes.SELECT,
       });
@@ -44,7 +44,7 @@ class DeletionNotifier {
       on users.email = questionnaire.email 
         where subscription.email is NULL 
       AND questionnaire_id is not NULL
-        AND created_at <= now() - interval'20 mins'`; // change to interval'7 days'
+        AND created_at <= now() - interval'5 mins'`; // change to interval'7 days'
       const deleteQueryString = `delete from questionnaire where questionnaire_id in (
         select questionnaire_id from users left join subscription 
           on users.email = subscription.email
@@ -52,7 +52,7 @@ class DeletionNotifier {
           on users.email = questionnaire.email 
         where subscription.email is NULL 
           AND questionnaire_id is not NULL
-          AND created_at <= now() - interval'20 mins')`; // change to interval'7 days'
+          AND created_at <= now() - interval'5 mins')`; // change to interval'7 days'
       const emailQueryResult = await db.query(emailQueryString, {
         type: QueryTypes.SELECT,
       });
