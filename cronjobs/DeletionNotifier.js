@@ -49,7 +49,7 @@ class DeletionNotifier {
       const deleteQueryOp = db.query(deleteQueryString, {
         type: QueryTypes.DELETE,
       });
-      const emailQueryString =  `select distinct users.email from users left join subscription 
+      const emailQueryString = `select distinct users.email from users left join subscription 
       on users.email = subscription.email
         left join questionnaire 
       on users.email = questionnaire.email 
