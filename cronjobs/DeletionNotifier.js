@@ -25,7 +25,7 @@ class DeletionNotifier {
       on users.email = questionnaire.email 
         where subscription.email is NULL 
       AND questionnaire_id is not NULL
-        AND created_at <= now() - interval'45 mins'`; // change to interval'5 days'
+        AND created_at <= now() - interval'15 mins'`; // change to interval'5 days'
       const queryResult = await db.query(queryString, {
         type: QueryTypes.SELECT,
       });
@@ -45,7 +45,7 @@ class DeletionNotifier {
           on users.email = questionnaire.email 
         where subscription.email is NULL 
           AND questionnaire_id is not NULL
-          AND created_at <= now() - interval'50 mins')` // change to interval'7 days'
+          AND created_at <= now() - interval'20 mins')`; // change to interval'7 days'
       const deleteQueryOp = db.query(deleteQueryString, {
         type: QueryTypes.DELETE,
       });
@@ -55,7 +55,7 @@ class DeletionNotifier {
       on users.email = questionnaire.email 
         where subscription.email is NULL 
       AND questionnaire_id is not NULL
-        AND created_at <= now() - interval'50 mins'`; // change to interval'7 days'
+        AND created_at <= now() - interval'20 mins'`; // change to interval'7 days'
       const emailQueryOp = db.query(emailQueryString, {
         type: QueryTypes.SELECT,
       });
@@ -72,5 +72,4 @@ class DeletionNotifier {
 (async () => {
   await DeletionNotifier.futureDeletionNotifier();
   await DeletionNotifier.deletionNotifier();
-  process.exit();
 })();
