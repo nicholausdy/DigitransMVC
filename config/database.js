@@ -18,7 +18,7 @@ const db = new Sequelize(
     ssl: true,
     port: stagingDB.port,
     pool: {
-      max: 8,
+      max: 5,
       min: 0,
       idle: 5000,
     },
