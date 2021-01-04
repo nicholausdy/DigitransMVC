@@ -28,7 +28,7 @@ class MailHandler {
       const options = {
         email: this.email,
         subject: '[Digitrans] Peringatan Penghapusan Kuesioner',
-        text: 'Beberapa kuesioner Anda akan dihapus dua hari dari sekarang. \nMohon aktifkan fitur langganan agar kuesioner tetap dapat diakses',
+        text: 'Beberapa kuesioner Anda akan dihapus dalam waktu kurang dari 2 hari. \nPatut diingat bahwa batas waktu penyimpanan kuesioner adalah 1 minggu sejak kuesioner dibuat. \nMohon aktifkan fitur langganan agar kuesioner tetap dapat diakses selamanya',
       };
       const mailResult = await MailerService.sendMail(options);
       console.log(mailResult);
