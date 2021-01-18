@@ -161,6 +161,15 @@ app.post('/private/getQuestions', async (req, res) => {
   }
 });
 
+app.post('/public/getOptionsToQuestionsMap', async (req, res) => {
+  try {
+    const mappingController = new QuestionController(req, res);
+    await mappingController.getOptionsToQuestionsMap();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
 app.post('/public/answer', async (req, res) => {
   try {
     const answerController = new AnswerController(req, res);

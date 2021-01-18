@@ -298,6 +298,56 @@ class QuestionController {
       });
     }
   }
+
+  static async getMappingsFromDB(questionnaireId) {
+    try {
+      const queryResult = await OptionsToQuestionsMap.findAll({
+        where: {
+          questionnaire_id: questionnaireId,
+        },
+      });
+      return queryResult;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  static async convertToMappingObjectList(mappingList) {
+    try {
+      const mappings = [];
+      for (let i = 0; i < mappingList.length; i++) {
+        const mappingObject = {};
+        mappingObject.question_id = mappingList[i].question_id;
+        mappingObject.option_id = mappingList[i].option_id;
+        mappingObject.question_id_dest = mappingList[i].question_id_dest;
+        mappings.push(mappingObject);
+      }
+      return mappings;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async getOptionsToQuestionsMap() {
+    try {
+      const isInputValid = await this.validateGetQuestionInput();
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected'});
+      }
+      const mappingListFromDB = await QuestionController.getMappingsFromDB(
+        this.req.body.questionnaire_id 
+      );
+      const mappings = await QuestionController.convertToMappingObjectList(mappingListFromDB);
+      const message = { questionnaire_id: this.req.body.questionnaire_id, mappings };
+      return this.res.status(200).json({ success: true, message });
+    } catch (error) {
+      return this.res.status(500).json({
+        success: false,
+        message: error.name,
+        detail: error.message,
+      });
+    }
+  }
 }
 
 module.exports = QuestionController;
