@@ -158,7 +158,7 @@ class AnswerController {
         return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
       }
       const { body } = this.req;
-      await AnswerController.validateAnswerBody(body);
+      // await AnswerController.validateAnswerBody(body);
       const listOfObjectToInsert = await AnswerController.createListOfObjectToBeInserted(body);
       await Answers.bulkCreate(listOfObjectToInsert);
       const answerPart = body.answers;
