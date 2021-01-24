@@ -11,6 +11,7 @@ const config = require('../config/index');
 const QuestionController = require('./controllers/QuestionController');
 const AnswerController = require('./controllers/AnswerController');
 const ChartController = require('./controllers/ChartController');
+const StatisticController = require('./controllers/StatisticController');
 
 const app = express();
 const server = http.Server(app);
@@ -201,6 +202,15 @@ app.post('/private/getChart', async (req, res) => {
   try {
     const chartController = new ChartController(req, res);
     await chartController.readChart();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
+app.post('/private/getStatistic', async (req, res) => {
+  try {
+    const statController = new StatisticController(req, res);
+    await statController.requestStat();
   } catch (error) {
     return res.status(500).json({ success: false, message: error.name, detail: error.message });
   }
