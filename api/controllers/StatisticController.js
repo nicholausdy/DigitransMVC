@@ -10,8 +10,8 @@ class StatisticController {
   async validateStatRequest() {
     try {
       const { body } = this.req;
-      if (Boolean(body.questionnaire_id) && Boolean(body.ind_question_id)
-      && Boolean(body.dep_question_id)) {
+      if (Boolean(body.questionnaire_id) && (Object.prototype.hasOwnProperty.call(body, 'ind_question_id'))
+      && (Object.prototype.hasOwnProperty.call(body, 'dep_question_id'))) {
         if ((typeof body.questionnaire_id === 'string') && (typeof body.ind_question_id === 'number')
         && (typeof body.dep_question_id === 'number')) {
           return true;
