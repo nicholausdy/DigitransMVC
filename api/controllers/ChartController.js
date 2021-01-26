@@ -9,7 +9,8 @@ class ChartController {
 
   async validateChartType() {
     try {
-      if ((this.req.body.chart_type === 'pie') || (this.req.body.chart_type === 'bar')) {
+      if ((this.req.body.chart_type === 'pie') || (this.req.body.chart_type === 'bar')
+        || (this.req.body.chart_type === 'h_bar')) {
         return true;
       }
       return false;
@@ -46,7 +47,7 @@ class ChartController {
       }
       const isChartTypeValid = await this.validateChartType();
       if (!(isChartTypeValid)) {
-        return this.res.status(400).json({ success: false, message: 'Wrong chart type detected (only pie, bar, and h_bar allowed'});
+        return this.res.status(400).json({ success: false, message: 'Wrong chart type detected (only pie, bar, and h_bar allowed)'});
       }
       const data = await publisher.request('chartCall', this.req.body);
       if (!(data.success)) {
