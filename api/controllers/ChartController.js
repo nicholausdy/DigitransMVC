@@ -7,11 +7,23 @@ class ChartController {
     this.res = res;
   }
 
+  async validateChartType() {
+    try {
+      if ((this.req.body.chart_type === 'pie') || (this.req.body.chart_type === 'bar')) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   async validateChartRequest() {
     try {
-      if (Boolean(this.req.body.questionnaire_id) &&
-          (Object.prototype.hasOwnProperty.call(this.req.body, 'question_id'))) {
-        if ((typeof this.req.body.questionnaire_id === 'string') && (typeof this.req.body.question_id === 'number')) {
+      if (Boolean(this.req.body.questionnaire_id) && Boolean(this.req.body.chart_type)
+        && (Object.prototype.hasOwnProperty.call(this.req.body, 'question_id'))) {
+        if ((typeof this.req.body.questionnaire_id === 'string') && (typeof this.req.body.chart_type === 'string')
+          && (typeof this.req.body.question_id === 'number')) {
           return true;
         }
         return false;
@@ -31,6 +43,10 @@ class ChartController {
       const isInputValid = await this.validateChartRequest();
       if (!(isInputValid)) {
         return this.res.status(400).json({ success: false, message: 'Missing fields detected'});
+      }
+      const isChartTypeValid = await this.validateChartType();
+      if (!(isChartTypeValid)) {
+        return this.res.status(400).json({ success: false, message: 'Wrong chart type detected (only pie, bar, and h_bar allowed'});
       }
       const data = await publisher.request('chartCall', this.req.body);
       if (!(data.success)) {
