@@ -171,7 +171,7 @@ app.post('/public/getOptionsToQuestionsMap', async (req, res) => {
   }
 });
 
-app.post('/public/deleteOptionsToQuestionsMap', async (req, res) => {
+app.post('/private/deleteOptionsToQuestionsMap', async (req, res) => {
   try {
     const mappingController = new QuestionController(req, res);
     await mappingController.deleteOptionsToQuestionsMap();
