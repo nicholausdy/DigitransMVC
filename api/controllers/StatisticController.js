@@ -107,7 +107,7 @@ class StatisticController {
       if (!(data.success)) {
         throw new Error(data.message);
       }
-      this.res.download(data.message);
+      this.res.download(data.message, `response-spreadsheet.${this.req.body.format}`);
       return this.res;
     } catch (error) {
       return this.res.status(500).json({
