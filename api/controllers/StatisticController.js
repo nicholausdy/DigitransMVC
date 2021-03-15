@@ -61,6 +61,62 @@ class StatisticController {
       });
     }
   }
+
+  async validateSpreadsheetRequest() {
+    try {
+      const { body } = this.req;
+      if (Boolean(body.questionnaire_id) && Boolean(body.format)) {
+        if ((typeof body.questionnaire_id === 'string') && (typeof body.format === 'string')) {
+          return true;
+        }
+        return false;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async validateSpreadsheetFormat() {
+    try {
+      const { body } = this.req;
+      if ((body.format === 'xlsx') || (body.format === 'csv')) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async requestSpreadsheet() {
+    try {
+      const tokenDecoded = await AuthService.tokenValidator(this.req);
+      if (!(tokenDecoded.success)) {
+        return this.res.status(403).json(tokenDecoded);
+      }
+      const isInputValid = await this.validateSpreadsheetRequest();
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
+      }
+      const isFormatValid = await this.validateSpreadsheetFormat();
+      if (!(isFormatValid)) {
+        return this.res.status(400).json({ success: false, message: 'Allowed format xlsx or csv' });
+      }
+      const data = await publisher.request('spreadsheetCall', this.req.body);
+      if (!(data.success)) {
+        throw new Error(data.message);
+      }
+      this.res.download(data.message);
+      return this.res;
+    } catch (error) {
+      return this.res.status(500).json({
+        success: false,
+        message: error.name,
+        detail: error.message,
+      });
+    }
+  }
 }
 
 module.exports = StatisticController;
