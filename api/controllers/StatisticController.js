@@ -117,6 +117,62 @@ class StatisticController {
       });
     }
   }
+
+  async validateSampleSizeRequest() {
+    try {
+      const { body } = this.req;
+      if (Boolean(body.population) && Boolean(body.confidence_level)
+      && Boolean(body.error_margin)) {
+        if ((typeof body.population === 'number') && (typeof body.confidence_level === 'number')
+        && (typeof body.error_margin === 'number')) {
+          return true;
+        }
+        return false;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async validateConfIntervalForMinSampleSize() {
+    try {
+      const { body } = this.req;
+      if ((body.confidence_level === 0.8) || (body.confidence_level === 0.9)
+      || (body.confidence_level === 0.95) || (body.confidence_level === 0.98)
+      || (body.confidence_level === 0.99)) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async requestMinSampleSize() {
+    try {
+      const tokenDecoded = await AuthService.tokenValidator(this.req);
+      if (!(tokenDecoded.success)) {
+        return this.res.status(403).json(tokenDecoded);
+      }
+      const isInputValid = await this.validateSampleSizeRequest();
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
+      }
+      const isConfIntervalValid = await this.validateConfIntervalForMinSampleSize();
+      if (!(isConfIntervalValid)) {
+        return this.res.status(400).json({ success: false, message: 'Allowed confidence interval 0.8, 0.9, 0.95, 0.98, or 0.99' });
+      }
+      const data = await publisher.request('samplesizeCall', this.req.body);
+      return this.res.status(200).json(data);
+    } catch (error) {
+      return this.res.status(500).json({
+        success: false,
+        message: error.name,
+        detail: error.message,
+      });
+    }
+  }
 }
 
 module.exports = StatisticController;

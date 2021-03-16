@@ -234,6 +234,15 @@ app.post('/private/getSpreadsheet', async (req, res) => {
   }
 });
 
+app.post('/private/getMinimumSampleSize', async (req, res) => {
+  try {
+    const statController = new StatisticController(req, res);
+    await statController.requestMinSampleSize();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
 server.listen(config.port, () => {
   console.log('Maid cafe running on port '.concat(config.port));
 });
