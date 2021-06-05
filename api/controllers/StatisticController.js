@@ -173,6 +173,39 @@ class StatisticController {
       });
     }
   }
+
+  async validateCronbachRequest() {
+    try {
+      const { body } = this.req;
+      if (Boolean(body.questionnaire_id) && Boolean(body.questions_list)) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async requestCronbach() {
+    try {
+      const tokenDecoded = await AuthService.tokenValidator(this.req);
+      if (!(tokenDecoded.success)) {
+        return this.res.status(403).json(tokenDecoded);
+      }
+      const isInputValid = await this.validateCronbachRequest();
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
+      }
+      const data = await publisher.request('cronbachCall', this.req.body);
+      return this.res.status(200).json(data);
+    } catch (error) {
+      return this.res.status(500).json({
+        success: false,
+        message: error.name,
+        detail: error.message,
+      });
+    }
+  }
 }
 
 module.exports = StatisticController;
