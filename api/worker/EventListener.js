@@ -17,6 +17,17 @@ async function natsEventListener() {
         reject(data);
       });
 
+      nc.subscribe('invitationCall', { queue: 'invitation.workers' }, async (msg) => {
+        if (msg) {
+          console.log(msg.email);
+          const handler = new MailHandler(msg.email, msg.type, msg.token);
+          await handler.sendQuestionnareInvitation(msg.text);
+          resolve(msg);
+        }
+        const data = { message: 'Error encountered during connection to NATS server'};
+        reject(data);
+      });
+
       nc.subscribe('scoreCall', { queue: 'score.workers'}, async (msg) => {
         if (msg) {
           console.log(msg);

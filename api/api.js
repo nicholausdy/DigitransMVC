@@ -252,6 +252,15 @@ app.post('/private/getCronbachAlpha', async (req, res) => {
   }
 });
 
+app.post('/private/shareQuestionnaire', async (req, res) => {
+  try {
+    const questionnaireController = new QuestionnaireController(req, res);
+    await questionnaireController.shareQuestionnaire();
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.name, detail: error.message });
+  }
+});
+
 server.listen(config.port, () => {
   console.log('Maid cafe running on port '.concat(config.port));
 });

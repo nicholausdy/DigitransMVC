@@ -51,6 +51,20 @@ class MailHandler {
     }
   }
 
+  async sendQuestionnareInvitation(text) {
+    try {
+      const options = {
+        email: this.email,
+        subject: '[Digitrans] Undangan Pengisian Kuesioner',
+        text,
+      };
+      const mailResult = await MailerService.sendMail(options);
+      console.log(mailResult);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   async send() {
     try {
       if (this.type === 'verification') {

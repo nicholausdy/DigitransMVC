@@ -2,6 +2,7 @@ const AuthService = require('../services/auth.service');
 const { Questionnaire } = require('../models/Questionnaire');
 const { Scores } = require('../models/Scores');
 const HashService = require('../services/hash.service');
+const { publisher } = require('../services/publish.service');
 
 class QuestionnaireController {
   constructor(req, res) {
@@ -180,6 +181,51 @@ class QuestionnaireController {
       });
       await Promise.all([deleteQuestionnaire, deleteScores]);
       return this.res.status(200).json({ success: true, message: 'Delete successful' });
+    } catch (error) {
+      return this.res.status(500).json({
+        success: false,
+        message: error.name,
+        detail: error.message,
+      });
+    }
+  }
+
+  async validateShareQuestionnaire() {
+    try {
+      if (Boolean(this.req.body.emails) && (Boolean(this.req.body.text))) {
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async shareQuestionnaire() {
+    try {
+      const isInputValid = await this.validateShareQuestionnaire();
+      if (!(isInputValid)) {
+        return this.res.status(400).json({ success: false, message: 'Missing fields detected' });
+      }
+      const tokenDecoded = await AuthService.tokenValidator(this.req);
+      if (!(tokenDecoded.success)) {
+        return this.res.status(403).json(tokenDecoded);
+      }
+      const { body } = this.req;
+      const asyncOpList = [];
+      for (let i = 0; i < body.emails.length; i++) {
+        const data = {
+          email: body.emails[i],
+          type: '',
+          token: '',
+          text: body.text,
+        };
+        const asyncOp = publisher.publish('invitationCall', data);
+        asyncOpList.push(asyncOp);
+      }
+      const result = await Promise.allSettled(asyncOpList);
+      console.log(result);
+      return this.res.status(200).json({ success: true, message: 'Questionnaires have been shared' });
     } catch (error) {
       return this.res.status(500).json({
         success: false,
